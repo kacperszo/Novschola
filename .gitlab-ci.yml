@@ -23,5 +23,5 @@ docker-build:
   stage: package
   script:
     - docker build -t registry.gitlab.com/kacperszo/novschola .
-    - docker login -u kacperszo -p $CI_BUILD_TOKEN registry.gitlab.com
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.com
     - docker push registry.gitlab.com/kacperszo/novschola
