@@ -5,7 +5,7 @@ import io.novschola.model.SchoolClass;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SchoolClassDTOtoSchoolClass implements Converter<SchoolClassDTO, SchoolClass> {
+public class SchoolClassDTOtoSchoolClassConverter implements Converter<SchoolClassDTO, SchoolClass> {
     @Override
     public SchoolClass convert(SchoolClassDTO from) {
         return null;
