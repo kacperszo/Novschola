@@ -8,6 +8,9 @@ import org.springframework.stereotype.Component;
 public class SchoolClassDTOtoSchoolClassConverter implements Converter<SchoolClassDTO, SchoolClass> {
     @Override
     public SchoolClass convert(SchoolClassDTO from) {
-        return null;
+        SchoolClass schoolClass = new SchoolClass();
+        schoolClass.setName(from.getName());
+        schoolClass.setId(from.getId());
+        return schoolClass;
     }
 }
