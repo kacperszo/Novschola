@@ -148,32 +148,43 @@ class SchoolClassServiceTest {
 
     @Test
     void findAll() {
+        schoolClassService.findAll();
         verify(schoolClassRepository, times(1)).findAll();
     }
 
     @Test
     void findAllById() {
+        schoolClassService.findAllById(new ArrayList<Long>());
         verify(schoolClassRepository, times(1)).findAllById(any());
     }
 
     @Test
     void count() {
-        verify(schoolClassRepository, times(1)).findAllById(any());
+        schoolClassService.count();
+        verify(schoolClassRepository, times(1)).count();
     }
 
     @Test
     void deleteById() {
+        schoolClassService.deleteById(EXISTINGID);
+        verify(schoolClassRepository, times(1)).deleteById(any());
     }
 
     @Test
     void delete() {
+        schoolClassService.delete(schoolClass);
+        verify(schoolClassRepository, times(1)).delete(any());
     }
 
     @Test
     void deleteAll() {
+        schoolClassService.deleteAll();
+        verify(schoolClassRepository, times(1)).deleteAll();
     }
 
     @Test
     void testDeleteAll() {
+        schoolClassService.deleteAll(new ArrayList<SchoolClass>());
+        verify(schoolClassRepository, times(1)).deleteAll(any());
     }
 }
