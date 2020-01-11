@@ -166,12 +166,14 @@ class SchoolClassServiceTest {
 
     @Test
     void deleteById() {
+        when(schoolClassRepository.findById(any())).thenReturn(java.util.Optional.ofNullable(schoolClass));
         schoolClassService.deleteById(EXISTINGID);
-        verify(schoolClassRepository, times(1)).deleteById(any());
+        verify(schoolClassRepository, times(1)).delete(any());
     }
 
     @Test
     void delete() {
+
         schoolClassService.delete(schoolClass);
         verify(schoolClassRepository, times(1)).delete(any());
     }

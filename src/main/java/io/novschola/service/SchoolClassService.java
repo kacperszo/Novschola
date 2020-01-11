@@ -79,7 +79,7 @@ public class SchoolClassService {
 
     public void deleteById(Long id) {
         Optional<SchoolClass> schoolClass = schoolClassRepository.findById(id);
-        schoolClass.ifPresent(aClass -> deleteById(aClass.getId()));
+        schoolClass.ifPresent(aClass -> schoolClassRepository.delete(aClass));
     }
 
     public void delete(SchoolClass schoolClass) {
