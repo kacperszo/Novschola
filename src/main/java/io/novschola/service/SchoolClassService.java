@@ -66,15 +66,15 @@ public class SchoolClassService {
     }
 
     public Iterable<SchoolClass> findAll() {
-        return null;
+        return schoolClassRepository.findAll();
     }
 
     public Iterable<SchoolClass> findAllById(Iterable<Long> idList) {
-        return null;
+        return schoolClassRepository.findAllById(idList);
     }
 
     public Long count() {
-        return null;
+        return schoolClassRepository.count();
     }
 
     public void deleteById(Long id) {
