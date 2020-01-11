@@ -27,7 +27,10 @@ public class SchoolClassService {
     }
 
     public SchoolClass create(SchoolClass schoolClass) throws Exception{
-        return null;
+        if (schoolClass.getId()!=null){
+            throw new BadRequestException();
+        }
+        return schoolClassRepository.save(schoolClass);
     }
 
     public Iterable<SchoolClass> updateAll(Iterable<SchoolClass> classes) throws Exception{
