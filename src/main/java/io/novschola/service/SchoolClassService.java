@@ -7,6 +7,8 @@ import io.novschola.repositories.SchoolClassRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Slf4j
 @Service
 public class SchoolClassService {
@@ -44,7 +46,11 @@ public class SchoolClassService {
     }
 
     public SchoolClass findById(Long id) throws Exception {
-        return null;
+        Optional<SchoolClass> schoolClass = schoolClassRepository.findById(id);
+        if (schoolClass.isPresent()){
+            return schoolClass.get();
+        }
+        throw new ItemNotFoundException();
     }
 
     public SchoolClass findByName(String name) throws Exception {
