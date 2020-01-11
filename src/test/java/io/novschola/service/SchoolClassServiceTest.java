@@ -115,7 +115,15 @@ class SchoolClassServiceTest {
     }
 
     @Test
-    void findById() {
+    void findById() throws Exception {
+        when(schoolClassRepository.findById(EXISTINGID)).thenReturn(java.util.Optional.ofNullable(schoolClass));
+        when(schoolClassRepository.findById(NONEXISTINGID)).thenReturn(java.util.Optional.empty());
+        assertEquals(schoolClass, schoolClassService.findById(EXISTINGID));
+        try{
+            schoolClassService.findById(NONEXISTINGID);
+        }catch (ItemNotFoundException e){
+            assertThat(e).isInstanceOf(ItemNotFoundException.class);
+        }
     }
 
     @Test
