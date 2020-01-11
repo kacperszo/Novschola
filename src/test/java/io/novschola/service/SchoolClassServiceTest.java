@@ -20,8 +20,8 @@ import static org.mockito.Mockito.when;
 class SchoolClassServiceTest {
 
     //constants
-    final Long ID = 2L;
-    final Long NOTEXISTINGID = 3L;
+    final Long EXISTINGID = 2L;
+    final Long NONEXISTINGID = 3L;
     final String NAME = "2c";
     final List<User> STUDENTS = new ArrayList<>();
 
@@ -36,7 +36,7 @@ class SchoolClassServiceTest {
         MockitoAnnotations.initMocks(this);
         schoolClassService = new SchoolClassService(schoolClassRepository);
         schoolClass = new SchoolClass();
-        schoolClass.setId(ID);
+        schoolClass.setId(EXISTINGID);
         schoolClass.setName(NAME);
         schoolClass.setStudents(STUDENTS);
     }
@@ -46,7 +46,7 @@ class SchoolClassServiceTest {
     void update() throws Exception {
         when(schoolClassRepository.save(schoolClass)).thenReturn(schoolClass);
         when(schoolClassRepository.existsById(schoolClass.getId())).thenReturn(true);
-        when(schoolClassRepository.existsById(NOTEXISTINGID)).thenReturn(false);
+        when(schoolClassRepository.existsById(NONEXISTINGID)).thenReturn(false);
 
         assertEquals(schoolClassService.update(schoolClass), schoolClass);
         SchoolClass newSchoolClass = new SchoolClass();
@@ -59,7 +59,7 @@ class SchoolClassServiceTest {
                     .isInstanceOf(BadRequestException.class);
         }
         SchoolClass notExistingSchoolClass = new SchoolClass();
-        notExistingSchoolClass.setId(NOTEXISTINGID);
+        notExistingSchoolClass.setId(NONEXISTINGID);
         notExistingSchoolClass.setStudents(STUDENTS);
         notExistingSchoolClass.setName(NAME);
         try {
