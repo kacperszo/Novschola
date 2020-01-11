@@ -15,7 +15,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class SchoolClassServiceTest {
 
@@ -81,13 +81,37 @@ class SchoolClassServiceTest {
         existingSchoolClass.setStudents(STUDENTS);
         try {
             schoolClassService.create(existingSchoolClass);
-        }catch (BadRequestException e){
+        } catch (BadRequestException e) {
             assertThat(e).isInstanceOf(BadRequestException.class);
         }
     }
 
     @Test
-    void updateAll() {
+    void updateAll() throws Exception {
+        when(schoolClassRepository.save(schoolClass)).thenReturn(schoolClass);
+        when(schoolClassRepository.existsById(schoolClass.getId())).thenReturn(true);
+        when(schoolClassRepository.existsById(NONEXISTINGID)).thenReturn(false);
+
+        List<SchoolClass> schoolClasses = new ArrayList<>();
+        SchoolClass notExistingSchoolClass = new SchoolClass();
+        notExistingSchoolClass.setId(NONEXISTINGID);
+        notExistingSchoolClass.setName(NAME);
+        notExistingSchoolClass.setStudents(STUDENTS);
+
+        schoolClasses.add(schoolClass);
+        schoolClasses.add(schoolClass);
+        schoolClassService.updateAll(schoolClasses);
+        verify(schoolClassRepository, times(1)).saveAll(schoolClasses);
+
+        schoolClasses.add(notExistingSchoolClass);
+
+        try {
+            assertEquals(schoolClasses, schoolClassService.updateAll(schoolClasses));
+        } catch (BadRequestException e) {
+            assertThat(e).isInstanceOf(BadRequestException.class);
+        }
+
+
     }
 
     @Test
