@@ -21,6 +21,7 @@ class SchoolClassServiceTest {
 
     //constants
     final Long ID = 2L;
+    final Long NOTEXISTINGID = 3L;
     final String NAME = "2c";
     final List<User> STUDENTS = new ArrayList<>();
 
@@ -45,7 +46,7 @@ class SchoolClassServiceTest {
     void update() throws Exception {
         when(schoolClassRepository.save(schoolClass)).thenReturn(schoolClass);
         when(schoolClassRepository.existsById(schoolClass.getId())).thenReturn(true);
-        when(schoolClassRepository.existsById(3L)).thenReturn(false);
+        when(schoolClassRepository.existsById(NOTEXISTINGID)).thenReturn(false);
 
         assertEquals(schoolClassService.update(schoolClass), schoolClass);
         SchoolClass newSchoolClass = new SchoolClass();
@@ -58,7 +59,7 @@ class SchoolClassServiceTest {
                     .isInstanceOf(BadRequestException.class);
         }
         SchoolClass notExistingSchoolClass = new SchoolClass();
-        notExistingSchoolClass.setId(3L);
+        notExistingSchoolClass.setId(NOTEXISTINGID);
         notExistingSchoolClass.setStudents(STUDENTS);
         notExistingSchoolClass.setName(NAME);
         try {
