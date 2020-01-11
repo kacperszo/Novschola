@@ -71,7 +71,19 @@ class SchoolClassServiceTest {
     }
 
     @Test
-    void create() {
+    void create() throws Exception {
+        schoolClass.setId(null);
+        when(schoolClassRepository.save(schoolClass)).thenReturn(schoolClass);
+        assertEquals(schoolClassService.create(schoolClass), schoolClass);
+        SchoolClass existingSchoolClass = new SchoolClass();
+        existingSchoolClass.setId(EXISTINGID);
+        existingSchoolClass.setName(NAME);
+        existingSchoolClass.setStudents(STUDENTS);
+        try {
+            schoolClassService.create(existingSchoolClass);
+        }catch (BadRequestException e){
+            assertThat(e).isInstanceOf(BadRequestException.class);
+        }
     }
 
     @Test
