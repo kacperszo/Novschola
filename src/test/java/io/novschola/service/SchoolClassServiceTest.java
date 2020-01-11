@@ -42,7 +42,31 @@ class SchoolClassServiceTest {
 
 
     @Test
-    void update(){
+    void update() throws Exception {
+        when(schoolClassRepository.save(schoolClass)).thenReturn(schoolClass);
+        when(schoolClassRepository.existsById(schoolClass.getId())).thenReturn(true);
+        when(schoolClassRepository.existsById(3L)).thenReturn(false);
+
+        assertEquals(schoolClassService.update(schoolClass), schoolClass);
+        SchoolClass newSchoolClass = new SchoolClass();
+        newSchoolClass.setName(NAME);
+        newSchoolClass.setStudents(STUDENTS);
+        try {
+            schoolClassService.update(newSchoolClass);
+        } catch (BadRequestException e) {
+            assertThat(e)
+                    .isInstanceOf(BadRequestException.class);
+        }
+        SchoolClass notExistingSchoolClass = new SchoolClass();
+        notExistingSchoolClass.setId(3L);
+        notExistingSchoolClass.setStudents(STUDENTS);
+        notExistingSchoolClass.setName(NAME);
+        try {
+            schoolClassService.update(notExistingSchoolClass);
+        } catch (ItemNotFoundException e) {
+            assertThat(e)
+                    .isInstanceOf(ItemNotFoundException.class);
+        }
     }
 
     @Test
