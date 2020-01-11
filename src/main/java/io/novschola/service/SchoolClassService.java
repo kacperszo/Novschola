@@ -6,6 +6,7 @@ import io.novschola.model.SchoolClass;
 import io.novschola.repositories.SchoolClassRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
 @Slf4j
 @Service
 public class SchoolClassService {
@@ -16,25 +17,30 @@ public class SchoolClassService {
         this.schoolClassRepository = schoolClassRepository;
     }
 
-    public SchoolClass update(SchoolClass schoolClass) throws Exception{
-        if (schoolClass.getId() == null){
+    public SchoolClass update(SchoolClass schoolClass) throws Exception {
+        if (schoolClass.getId() == null) {
             throw new BadRequestException();
         }
-        if (!schoolClassRepository.existsById(schoolClass.getId())){
+        if (!schoolClassRepository.existsById(schoolClass.getId())) {
             throw new ItemNotFoundException();
         }
         return schoolClassRepository.save(schoolClass);
     }
 
-    public SchoolClass create(SchoolClass schoolClass) throws Exception{
-        if (schoolClass.getId()!=null){
+    public SchoolClass create(SchoolClass schoolClass) throws Exception {
+        if (schoolClass.getId() != null) {
             throw new BadRequestException();
         }
         return schoolClassRepository.save(schoolClass);
     }
 
-    public Iterable<SchoolClass> updateAll(Iterable<SchoolClass> classes) throws Exception{
-        return null;
+    public Iterable<SchoolClass> updateAll(Iterable<SchoolClass> classes) throws Exception {
+        classes.forEach(schoolClass -> {
+            if (schoolClass.getId() == null || !schoolClassRepository.existsById(schoolClass.getId())) {
+                throw new BadRequestException();
+            }
+        });
+        return schoolClassRepository.saveAll(classes);
     }
 
     public SchoolClass findById(Long id) throws Exception {
@@ -53,7 +59,7 @@ public class SchoolClassService {
         return null;
     }
 
-    public Iterable<SchoolClass> findAllById(Iterable<Long> idList){
+    public Iterable<SchoolClass> findAllById(Iterable<Long> idList) {
         return null;
     }
 
@@ -61,7 +67,7 @@ public class SchoolClassService {
         return null;
     }
 
-    public void deleteById(Long id){
+    public void deleteById(Long id) {
     }
 
     public void delete(SchoolClass schoolClass) {
@@ -72,7 +78,6 @@ public class SchoolClassService {
 
     public void deleteAll() {
     }
-
 
 
 }
