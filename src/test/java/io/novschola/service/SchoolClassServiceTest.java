@@ -15,6 +15,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 class SchoolClassServiceTest {
@@ -119,19 +120,30 @@ class SchoolClassServiceTest {
         when(schoolClassRepository.findById(EXISTINGID)).thenReturn(java.util.Optional.ofNullable(schoolClass));
         when(schoolClassRepository.findById(NONEXISTINGID)).thenReturn(java.util.Optional.empty());
         assertEquals(schoolClass, schoolClassService.findById(EXISTINGID));
-        try{
+        try {
             schoolClassService.findById(NONEXISTINGID);
-        }catch (ItemNotFoundException e){
+        } catch (ItemNotFoundException e) {
             assertThat(e).isInstanceOf(ItemNotFoundException.class);
         }
     }
 
     @Test
-    void findByName() {
+    void findByName() throws Exception {
+        when(schoolClassRepository.findByName(NAME)).thenReturn(java.util.Optional.ofNullable(schoolClass));
+        when(schoolClassRepository.findByName("NOTEXISTINGNAME")).thenReturn(java.util.Optional.empty());
+        assertEquals(schoolClass, schoolClassService.findByName(NAME));
+        try {
+            schoolClassService.findByName("NOTEXISTINGNAME");
+        } catch (ItemNotFoundException e) {
+            assertThat(e).isInstanceOf(ItemNotFoundException.class);
+        }
     }
 
     @Test
     void existsById() {
+        when(schoolClassRepository.existsById(any())).thenReturn(true);
+        assertTrue(schoolClassService.existsById(EXISTINGID));
+        verify(schoolClassRepository, times(1)).existsById(EXISTINGID);
     }
 
     @Test
