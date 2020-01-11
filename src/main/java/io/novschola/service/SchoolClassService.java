@@ -54,11 +54,15 @@ public class SchoolClassService {
     }
 
     public SchoolClass findByName(String name) throws Exception {
-        return null;
+        Optional<SchoolClass> schoolClass = schoolClassRepository.findByName(name);
+        if (schoolClass.isPresent()){
+            return schoolClass.get();
+        }
+        throw new ItemNotFoundException();
     }
 
     public Boolean existsById(Long id) {
-        return null;
+        return schoolClassRepository.existsById(id);
     }
 
     public Iterable<SchoolClass> findAll() {
