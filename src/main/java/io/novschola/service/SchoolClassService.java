@@ -78,15 +78,25 @@ public class SchoolClassService {
     }
 
     public void deleteById(Long id) {
+        Optional<SchoolClass> schoolClass = schoolClassRepository.findById(id);
+        schoolClass.ifPresent(aClass -> deleteById(aClass.getId()));
     }
 
     public void delete(SchoolClass schoolClass) {
+        schoolClassRepository.delete(schoolClass);
     }
 
     public void deleteAll(Iterable<SchoolClass> classes) {
+        classes.forEach(schoolClass -> {
+            if (schoolClass.getId() == null || !schoolClassRepository.existsById(schoolClass.getId())) {
+                throw new BadRequestException();
+            }
+        });
+        schoolClassRepository.deleteAll(classes);
     }
 
     public void deleteAll() {
+        schoolClassRepository.deleteAll();
     }
 
 
