@@ -148,14 +148,17 @@ class SchoolClassServiceTest {
 
     @Test
     void findAll() {
+        verify(schoolClassRepository, times(1)).findAll();
     }
 
     @Test
     void findAllById() {
+        verify(schoolClassRepository, times(1)).findAllById(any());
     }
 
     @Test
     void count() {
+        verify(schoolClassRepository, times(1)).findAllById(any());
     }
 
     @Test
