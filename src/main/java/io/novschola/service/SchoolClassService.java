@@ -17,7 +17,13 @@ public class SchoolClassService {
     }
 
     public SchoolClass update(SchoolClass schoolClass) throws Exception{
-       return null;
+        if (schoolClass.getId() == null){
+            throw new BadRequestException();
+        }
+        if (!schoolClassRepository.existsById(schoolClass.getId())){
+            throw new ItemNotFoundException();
+        }
+        return schoolClassRepository.save(schoolClass);
     }
 
     public SchoolClass create(SchoolClass schoolClass) throws Exception{
