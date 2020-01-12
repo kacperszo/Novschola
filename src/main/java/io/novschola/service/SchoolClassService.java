@@ -47,7 +47,7 @@ public class SchoolClassService {
 
     public SchoolClass findById(Long id) throws Exception {
         Optional<SchoolClass> schoolClass = schoolClassRepository.findById(id);
-        if (schoolClass.isPresent()){
+        if (schoolClass.isPresent()) {
             return schoolClass.get();
         }
         throw new ItemNotFoundException();
@@ -55,7 +55,7 @@ public class SchoolClassService {
 
     public SchoolClass findByName(String name) throws Exception {
         Optional<SchoolClass> schoolClass = schoolClassRepository.findByName(name);
-        if (schoolClass.isPresent()){
+        if (schoolClass.isPresent()) {
             return schoolClass.get();
         }
         throw new ItemNotFoundException();
@@ -78,8 +78,7 @@ public class SchoolClassService {
     }
 
     public void deleteById(Long id) {
-        Optional<SchoolClass> schoolClass = schoolClassRepository.findById(id);
-        schoolClass.ifPresent(aClass -> schoolClassRepository.delete(aClass));
+        schoolClassRepository.deleteById(id);
     }
 
     public void delete(SchoolClass schoolClass) {
