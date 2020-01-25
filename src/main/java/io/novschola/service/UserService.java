@@ -26,5 +26,8 @@ public class UserService {
         user.setActive(false);
         return userRepository.save(user);
     }
+    public User update(User user){
+        return null;
+    }
 
 }
