@@ -52,7 +52,7 @@ class UserServiceTest {
     }
 
     @Test
-    void updateTest() throws Exception{
+    void update() throws Exception {
         final String NEWLASTNAME = "New Last Name";
         final Long ID = 2L;
         when(userRepository.save(any())).thenReturn(user);
@@ -69,4 +69,21 @@ class UserServiceTest {
         }
     }
 
+    @Test
+    void findById() throws Exception {
+        final Long EXISTINGID = 2L;
+        final Long NOTEXISTINGID = 3L;
+        when(userRepository.findById(EXISTINGID)).thenReturn(java.util.Optional.ofNullable(user));
+        when(userRepository.findById(NOTEXISTINGID)).thenReturn(java.util.Optional.empty());
+
+        User foundUser = userService.findById(EXISTINGID);
+        assertEquals(foundUser, user);
+
+        try {
+            userService.findById(NOTEXISTINGID);
+        } catch (ItemNotFoundException e) {
+            Assertions.assertThat(e).isInstanceOf(ItemNotFoundException.class);
+        }
+
+    }
 }
