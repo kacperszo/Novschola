@@ -1,6 +1,7 @@
 package io.novschola.service;
 
 import io.novschola.exception.BadRequestException;
+import io.novschola.exception.ItemNotFoundException;
 import io.novschola.model.User;
 import io.novschola.repositories.UserRepository;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -8,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+
+import java.util.Optional;
 
 @Service
 @Validated
@@ -35,8 +38,12 @@ public class UserService {
         }
         return userRepository.save(user);
     }
-    public User findById(Long id){
-        return null;
+    public User findById(Long id) throws Exception{
+        Optional<User> user = userRepository.findById(id);
+        if (user.isPresent()){
+            return user.get();
+        }
+        throw new ItemNotFoundException();
     }
 
 }
