@@ -45,5 +45,12 @@ public class UserService {
         }
         throw new ItemNotFoundException();
     }
+    public User findByEmail(String email){
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isPresent()){
+            return user.get();
+        }
+        throw new ItemNotFoundException();
+    }
 
 }
