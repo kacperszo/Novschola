@@ -12,6 +12,8 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.util.Assert;
 
+import java.util.Optional;
+
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -85,5 +87,21 @@ class UserServiceTest {
             Assertions.assertThat(e).isInstanceOf(ItemNotFoundException.class);
         }
 
+    }
+
+    @Test
+    void findByEmail() {
+        final String EXISTINGEMAIL = "emial@ema.com";
+        final String NOTEXISTINGEMAIL = "loler@mail.com";
+        when(userRepository.findByEmail(EXISTINGEMAIL)).thenReturn(java.util.Optional.ofNullable(user));
+        when(userRepository.findByEmail(NOTEXISTINGEMAIL)).thenReturn(Optional.empty());
+
+        User foundUser = userService.findByEmail(EXISTINGEMAIL);
+        assertEquals(foundUser, user);
+        try {
+            userService.findByEmail(NOTEXISTINGEMAIL);
+        } catch (ItemNotFoundException e) {
+            Assertions.assertThat(e).isInstanceOf(ItemNotFoundException.class);
+        }
     }
 }
