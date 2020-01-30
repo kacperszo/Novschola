@@ -12,7 +12,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.util.Assert;
 
-import java.util.Optional;
+import java.util.*;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
@@ -103,5 +103,32 @@ class UserServiceTest {
         } catch (ItemNotFoundException e) {
             Assertions.assertThat(e).isInstanceOf(ItemNotFoundException.class);
         }
+    }
+
+    @Test
+    void getAllActive() {
+        ArrayList<User> users = new ArrayList<>();
+        users.add(user);
+        when(userRepository.findAllByActiveTrue()).thenReturn(users);
+        assertEquals(userService.getAllActive().get(0), users.get(0));
+        System.out.println(users.get(0));
+        verify(userRepository, times(1)).findAllByActiveTrue();
+    }
+
+    @Test
+    void findByFirstName() {
+
+    }
+
+    @Test
+    void findByLastName() {
+    }
+
+    @Test
+    void findByActivationKey() {
+    }
+
+    @Test
+    void activate() {
     }
 }
