@@ -133,11 +133,23 @@ class UserServiceTest {
 
     @Test
     void findByLastName() {
+        final String EXISTINGNAME = "Joul";
+        final String NOTEXISTINGENAME = "Poul";
+        when(userRepository.findByLastName(EXISTINGNAME)).thenReturn(java.util.Optional.ofNullable(user));
+        when(userRepository.findByLastName(NOTEXISTINGENAME)).thenReturn(Optional.empty());
 
+        User foundUser = userService.findByLastName(EXISTINGNAME);
+        assertEquals(foundUser, user);
+        try {
+            userService.findByLastName(NOTEXISTINGENAME);
+        } catch (ItemNotFoundException e) {
+            Assertions.assertThat(e).isInstanceOf(ItemNotFoundException.class);
+        }
     }
 
     @Test
     void findByActivationKey() {
+
     }
 
     @Test
