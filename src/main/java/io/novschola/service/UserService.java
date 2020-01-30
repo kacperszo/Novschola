@@ -10,7 +10,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 @Validated
@@ -32,25 +35,65 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User update(User user) throws Exception{
+    public User update(User user) throws Exception {
         if (user.getId() == null) {
             throw new BadRequestException();
         }
         return userRepository.save(user);
     }
-    public User findById(Long id) throws Exception{
+
+    public User findById(Long id) throws Exception {
         Optional<User> user = userRepository.findById(id);
-        if (user.isPresent()){
+        if (user.isPresent()) {
             return user.get();
         }
         throw new ItemNotFoundException();
     }
-    public User findByEmail(String email){
+
+    public User findByEmail(String email) {
         Optional<User> user = userRepository.findByEmail(email);
-        if (user.isPresent()){
+        if (user.isPresent()) {
             return user.get();
         }
         throw new ItemNotFoundException();
     }
+
+    public List<User> getAllActive() {
+        Iterable<User> users = userRepository.findAllByActiveTrue();
+        return StreamSupport
+                .stream(users.spliterator(), false)
+                .collect(Collectors.toList());
+    }
+
+    public User findByFirstName(String name) {
+        Optional<User> user = userRepository.findByFirstName(name);
+        if (user.isPresent()) {
+            return user.get();
+        }
+        throw new ItemNotFoundException();
+    }
+
+    public User findByLastName(String name) {
+        Optional<User> user = userRepository.findByLastName(name);
+        if (user.isPresent()) {
+            return user.get();
+        }
+        throw new ItemNotFoundException();
+    }
+
+    public User findByActivationKey(String key) {
+        Optional<User> user = userRepository.findByActivationKey(key);
+        if (user.isPresent()) {
+            return user.get();
+        }
+        throw new ItemNotFoundException();
+    }
+
+    public User activate(String key) throws Exception {
+        User user = findByActivationKey(key);
+        user.setActive(true);
+        return update(user);
+    }
+
 
 }
