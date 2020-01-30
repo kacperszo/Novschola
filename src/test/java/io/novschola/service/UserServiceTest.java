@@ -149,7 +149,18 @@ class UserServiceTest {
 
     @Test
     void findByActivationKey() {
+        final String EXISTINGKEY = "Rj341321312@11231234%!#1231@33122344553112";
+        final String NOTEXISTINGEKEY = "Bj341321312@11231234%!#1231@33122344553112";
+        when(userRepository.findByActivationKey(EXISTINGKEY)).thenReturn(java.util.Optional.ofNullable(user));
+        when(userRepository.findByActivationKey(NOTEXISTINGEKEY)).thenReturn(Optional.empty());
 
+        User foundUser = userService.findByActivationKey(EXISTINGKEY);
+        assertEquals(foundUser, user);
+        try {
+            userService.findByActivationKey(NOTEXISTINGEKEY);
+        } catch (ItemNotFoundException e) {
+            Assertions.assertThat(e).isInstanceOf(ItemNotFoundException.class);
+        }
     }
 
     @Test
