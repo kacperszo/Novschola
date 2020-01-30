@@ -12,7 +12,8 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.util.Assert;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
@@ -111,17 +112,28 @@ class UserServiceTest {
         users.add(user);
         when(userRepository.findAllByActiveTrue()).thenReturn(users);
         assertEquals(userService.getAllActive().get(0), users.get(0));
-        System.out.println(users.get(0));
         verify(userRepository, times(1)).findAllByActiveTrue();
     }
 
     @Test
     void findByFirstName() {
+        final String EXISTINGNAME = "Joul";
+        final String NOTEXISTINGENAME = "Poul";
+        when(userRepository.findByFirstName(EXISTINGNAME)).thenReturn(java.util.Optional.ofNullable(user));
+        when(userRepository.findByFirstName(NOTEXISTINGENAME)).thenReturn(Optional.empty());
 
+        User foundUser = userService.findByFirstName(EXISTINGNAME);
+        assertEquals(foundUser, user);
+        try {
+            userService.findByFirstName(NOTEXISTINGENAME);
+        } catch (ItemNotFoundException e) {
+            Assertions.assertThat(e).isInstanceOf(ItemNotFoundException.class);
+        }
     }
 
     @Test
     void findByLastName() {
+
     }
 
     @Test
