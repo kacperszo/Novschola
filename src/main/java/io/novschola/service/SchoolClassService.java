@@ -30,9 +30,7 @@ public class SchoolClassService {
     }
 
     public SchoolClass create(SchoolClass schoolClass) throws Exception {
-        if (schoolClass.getId() != null) {
-            throw new BadRequestException();
-        }
+        schoolClass.setId(null);
         return schoolClassRepository.save(schoolClass);
     }
 
@@ -97,6 +95,5 @@ public class SchoolClassService {
     public void deleteAll() {
         schoolClassRepository.deleteAll();
     }
-
 
 }

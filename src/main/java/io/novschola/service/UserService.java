@@ -1,0 +1,99 @@
+package io.novschola.service;
+
+import io.novschola.exception.BadRequestException;
+import io.novschola.exception.ItemNotFoundException;
+import io.novschola.model.User;
+import io.novschola.repositories.UserRepository;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+@Service
+@Validated
+public class UserService {
+    private UserRepository userRepository;
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @Autowired
+    public UserService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+        this.userRepository = userRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    }
+
+    public User create(User user) {
+        user.setId(null);
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        user.setActivationKey(RandomStringUtils.randomAlphanumeric(20));
+        user.setActive(false);
+        return userRepository.save(user);
+    }
+
+    public User update(User user) throws Exception {
+        if (user.getId() == null) {
+            throw new BadRequestException();
+        }
+        return userRepository.save(user);
+    }
+
+    public User findById(Long id) throws Exception {
+        Optional<User> user = userRepository.findById(id);
+        if (user.isPresent()) {
+            return user.get();
+        }
+        throw new ItemNotFoundException();
+    }
+
+    public User findByEmail(String email) {
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isPresent()) {
+            return user.get();
+        }
+        throw new ItemNotFoundException();
+    }
+
+    public List<User> getAllActive() {
+        Iterable<User> users = userRepository.findAllByActiveTrue();
+        return StreamSupport
+                .stream(users.spliterator(), false)
+                .collect(Collectors.toList());
+    }
+
+    public User findByFirstName(String name) {
+        Optional<User> user = userRepository.findByFirstName(name);
+        if (user.isPresent()) {
+            return user.get();
+        }
+        throw new ItemNotFoundException();
+    }
+
+    public User findByLastName(String name) {
+        Optional<User> user = userRepository.findByLastName(name);
+        if (user.isPresent()) {
+            return user.get();
+        }
+        throw new ItemNotFoundException();
+    }
+
+    public User findByActivationKey(String key) {
+        Optional<User> user = userRepository.findByActivationKey(key);
+        if (user.isPresent()) {
+            return user.get();
+        }
+        throw new ItemNotFoundException();
+    }
+
+    public User activate(String key) throws Exception {
+        User user = findByActivationKey(key);
+        user.setActive(true);
+        return update(user);
+    }
+
+
+}
