@@ -42,8 +42,11 @@ public class PostService {
 
     }
 
-    public Post create(Post post) {
-        return null;
+    public Post create(Post post, User author) {
+        post.setId(null);
+        post.setCreationTime(null);
+        post.setAuthor(author);
+        return postRepository.save(post);
     }
 
     public Page<Post> findAll(Pageable pageable) {
@@ -54,7 +57,7 @@ public class PostService {
 
     }
 
-    public void deleteById() {
+    public void deleteById(Long id) {
 
     }
 
