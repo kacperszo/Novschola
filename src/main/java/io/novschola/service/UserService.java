@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -32,6 +31,7 @@ public class UserService {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         user.setActivationKey(RandomStringUtils.randomAlphanumeric(20));
         user.setActive(false);
+        user.setCreateDate(null);
         return userRepository.save(user);
     }
 
@@ -43,19 +43,11 @@ public class UserService {
     }
 
     public User findById(Long id) throws Exception {
-        Optional<User> user = userRepository.findById(id);
-        if (user.isPresent()) {
-            return user.get();
-        }
-        throw new ItemNotFoundException();
+        return userRepository.findById(id).orElseThrow(ItemNotFoundException::new);
     }
 
     public User findByEmail(String email) {
-        Optional<User> user = userRepository.findByEmail(email);
-        if (user.isPresent()) {
-            return user.get();
-        }
-        throw new ItemNotFoundException();
+        return userRepository.findByEmail(email).orElseThrow(ItemNotFoundException::new);
     }
 
     public List<User> getAllActive() {
@@ -66,27 +58,15 @@ public class UserService {
     }
 
     public User findByFirstName(String name) {
-        Optional<User> user = userRepository.findByFirstName(name);
-        if (user.isPresent()) {
-            return user.get();
-        }
-        throw new ItemNotFoundException();
+        return userRepository.findByFirstName(name).orElseThrow(ItemNotFoundException::new);
     }
 
     public User findByLastName(String name) {
-        Optional<User> user = userRepository.findByLastName(name);
-        if (user.isPresent()) {
-            return user.get();
-        }
-        throw new ItemNotFoundException();
+        return userRepository.findByLastName(name).orElseThrow(ItemNotFoundException::new);
     }
 
     public User findByActivationKey(String key) {
-        Optional<User> user = userRepository.findByActivationKey(key);
-        if (user.isPresent()) {
-            return user.get();
-        }
-        throw new ItemNotFoundException();
+        return userRepository.findByActivationKey(key).orElseThrow(ItemNotFoundException::new);
     }
 
     public User activate(String key) throws Exception {
