@@ -94,6 +94,8 @@ class PostServiceTest {
 
     @Test
     void delete() {
+        postService.delete(post);
+        verify(postRepository, times(1)).delete(post);
     }
 
     @Test
