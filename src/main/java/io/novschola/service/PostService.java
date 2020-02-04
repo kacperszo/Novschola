@@ -1,5 +1,6 @@
 package io.novschola.service;
 
+import io.novschola.exception.BadRequestException;
 import io.novschola.exception.ItemNotFoundException;
 import io.novschola.model.Post;
 import io.novschola.model.User;
@@ -34,7 +35,11 @@ public class PostService {
     }
 
     public Post update(Post post) {
-        return null;
+        if (post.getId() == null) {
+            throw new BadRequestException();
+        }
+        return postRepository.save(post);
+
     }
 
     public Post create(Post post) {
