@@ -19,8 +19,7 @@ public class PostService {
     }
 
     public Post findById(Long id) {
-        Optional<Post> postOptional = postRepository.findById(id);
-        return postOptional.orElseThrow(ItemNotFoundException::new);
+        return postRepository.findById(id).orElseThrow(ItemNotFoundException::new);
     }
 
     public Page<Post> findAllByAuthor(User author, Pageable pageable) {
