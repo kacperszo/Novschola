@@ -4,9 +4,10 @@ import io.novschola.exception.ItemNotFoundException;
 import io.novschola.model.Post;
 import io.novschola.model.User;
 import io.novschola.repositories.PostRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,15 +23,15 @@ public class PostService {
         return postOptional.orElseThrow(ItemNotFoundException::new);
     }
 
-    public List<Post> findAllByAuthor(User author) {
+    public Page<Post> findAllByAuthor(User author, Pageable pageable) {
         return null;
     }
 
-    public List<Post> findAllByAuthorId(Long Id) {
+    public Page<Post> findAllByAuthorId(Long Id, Pageable pageable) {
         return null;
     }
 
-    public List<Post> search(String query) {
+    public Page<Post> search(String query, Pageable pageable) {
         return null;
     }
 
@@ -41,4 +42,17 @@ public class PostService {
     public Post create(Post post) {
         return null;
     }
+
+    public Page<Post> findAll(Pageable pageable) {
+        return null;
+    }
+
+    public void delete(Post post) {
+
+    }
+
+    public void deleteById() {
+
+    }
+
 }
