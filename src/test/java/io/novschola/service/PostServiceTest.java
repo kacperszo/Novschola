@@ -47,6 +47,7 @@ class PostServiceTest {
 
     @Test
     void findAllByAuthor() {
+
     }
 
     @Test
@@ -63,5 +64,18 @@ class PostServiceTest {
 
     @Test
     void create() {
+    }
+
+    @Test
+    void delete() {
+    }
+
+    @Test
+    void deleteById() {
+    }
+
+    @Test
+    void findAll() {
+        
     }
 }
