@@ -1,11 +1,13 @@
 package io.novschola.service;
 
+import io.novschola.exception.ItemNotFoundException;
 import io.novschola.model.Post;
 import io.novschola.model.User;
 import io.novschola.repositories.PostRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PostService {
@@ -16,7 +18,8 @@ public class PostService {
     }
 
     public Post findById(Long id) {
-        return null;
+        Optional<Post> postOptional = postRepository.findById(id);
+        return postOptional.orElseThrow(ItemNotFoundException::new);
     }
 
     public List<Post> findAllByAuthor(User author) {
