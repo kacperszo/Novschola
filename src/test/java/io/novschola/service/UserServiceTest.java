@@ -4,7 +4,6 @@ import io.novschola.exception.BadRequestException;
 import io.novschola.exception.ItemNotFoundException;
 import io.novschola.model.User;
 import io.novschola.repositories.UserRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -19,14 +18,16 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 class UserServiceTest {
-    private static final String EMAIL = "test@test.com";
-    private static final String NAME = "John";
-    private static final String LASTNAME = "Doo";
-    private static final String PASSWORD = "PASSWORD";
+    private final String email = "test@test.com";
+    private final String name = "John";
+    private final String lastName = "Doo";
+    private final String password = "PASSWORD";
+
     @Mock
     UserRepository userRepository;
     BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -39,10 +40,10 @@ class UserServiceTest {
         MockitoAnnotations.initMocks(this);
         userService = new UserService(userRepository, bCryptPasswordEncoder);
         user = new User();
-        user.setEmail(EMAIL);
-        user.setFirstName(NAME);
-        user.setLastName(LASTNAME);
-        user.setPassword(PASSWORD);
+        user.setEmail(email);
+        user.setFirstName(name);
+        user.setLastName(lastName);
+        user.setPassword(password);
     }
 
     @Test
@@ -51,59 +52,44 @@ class UserServiceTest {
         User newUSer = userService.create(this.user);
         verify(userRepository, times(1)).save(any());
         Assert.notNull(newUSer.getActivationKey(), "activation key is null");
-        assertThat(newUSer.getPassword(), not(equalTo(PASSWORD)));
+        assertThat(newUSer.getPassword(), not(equalTo(password)));
     }
 
     @Test
     void update() throws Exception {
-        final String NEWLASTNAME = "New Last Name";
+        final String newLastName = "New Last Name";
         final Long ID = 2L;
         when(userRepository.save(any())).thenReturn(user);
         user.setId(ID);
-        user.setLastName(NEWLASTNAME);
+        user.setLastName(newLastName);
         user = userService.update(this.user);
         verify(userRepository, times(1)).save(user);
-        assertEquals(user.getLastName(), NEWLASTNAME);
-        try {
-            user.setId(null);
-            userService.update(user);
-        } catch (BadRequestException e) {
-            Assertions.assertThat(e).isInstanceOf(BadRequestException.class);
-        }
+        assertEquals(user.getLastName(), newLastName);
+        user.setId(null);
+        assertThrows(BadRequestException.class, () -> userService.update(user));
     }
 
     @Test
     void findById() throws Exception {
-        final Long EXISTINGID = 2L;
-        final Long NOTEXISTINGID = 3L;
-        when(userRepository.findById(EXISTINGID)).thenReturn(java.util.Optional.ofNullable(user));
-        when(userRepository.findById(NOTEXISTINGID)).thenReturn(java.util.Optional.empty());
-
-        User foundUser = userService.findById(EXISTINGID);
+        final Long existingId = 2L;
+        final Long notExistingId = 3L;
+        when(userRepository.findById(existingId)).thenReturn(java.util.Optional.ofNullable(user));
+        when(userRepository.findById(notExistingId)).thenReturn(java.util.Optional.empty());
+        User foundUser = userService.findById(existingId);
         assertEquals(foundUser, user);
-
-        try {
-            userService.findById(NOTEXISTINGID);
-        } catch (ItemNotFoundException e) {
-            Assertions.assertThat(e).isInstanceOf(ItemNotFoundException.class);
-        }
+        assertThrows(ItemNotFoundException.class, () -> userService.findById(notExistingId));
 
     }
 
     @Test
     void findByEmail() {
-        final String EXISTINGEMAIL = "emial@ema.com";
-        final String NOTEXISTINGEMAIL = "loler@mail.com";
-        when(userRepository.findByEmail(EXISTINGEMAIL)).thenReturn(java.util.Optional.ofNullable(user));
-        when(userRepository.findByEmail(NOTEXISTINGEMAIL)).thenReturn(Optional.empty());
-
-        User foundUser = userService.findByEmail(EXISTINGEMAIL);
+        final String existingEmail = "emial@ema.com";
+        final String notExistingEmail = "loler@mail.com";
+        when(userRepository.findByEmail(existingEmail)).thenReturn(java.util.Optional.ofNullable(user));
+        when(userRepository.findByEmail(notExistingEmail)).thenReturn(Optional.empty());
+        User foundUser = userService.findByEmail(existingEmail);
         assertEquals(foundUser, user);
-        try {
-            userService.findByEmail(NOTEXISTINGEMAIL);
-        } catch (ItemNotFoundException e) {
-            Assertions.assertThat(e).isInstanceOf(ItemNotFoundException.class);
-        }
+        assertThrows(ItemNotFoundException.class, () -> userService.findByEmail(notExistingEmail));
     }
 
     @Test
@@ -117,66 +103,50 @@ class UserServiceTest {
 
     @Test
     void findByFirstName() {
-        final String EXISTINGNAME = "Joul";
-        final String NOTEXISTINGENAME = "Poul";
-        when(userRepository.findByFirstName(EXISTINGNAME)).thenReturn(java.util.Optional.ofNullable(user));
-        when(userRepository.findByFirstName(NOTEXISTINGENAME)).thenReturn(Optional.empty());
+        final String existingName = "Joul";
+        final String notExistingName = "Poul";
+        when(userRepository.findByFirstName(existingName)).thenReturn(java.util.Optional.ofNullable(user));
+        when(userRepository.findByFirstName(notExistingName)).thenReturn(Optional.empty());
 
-        User foundUser = userService.findByFirstName(EXISTINGNAME);
+        User foundUser = userService.findByFirstName(existingName);
         assertEquals(foundUser, user);
-        try {
-            userService.findByFirstName(NOTEXISTINGENAME);
-        } catch (ItemNotFoundException e) {
-            Assertions.assertThat(e).isInstanceOf(ItemNotFoundException.class);
-        }
+        assertThrows(ItemNotFoundException.class, () -> userService.findByFirstName(notExistingName));
     }
 
     @Test
     void findByLastName() {
-        final String EXISTINGNAME = "Joul";
-        final String NOTEXISTINGENAME = "Poul";
-        when(userRepository.findByLastName(EXISTINGNAME)).thenReturn(java.util.Optional.ofNullable(user));
-        when(userRepository.findByLastName(NOTEXISTINGENAME)).thenReturn(Optional.empty());
+        final String existingName = "Joul";
+        final String notExistingName = "Poul";
+        when(userRepository.findByLastName(existingName)).thenReturn(java.util.Optional.ofNullable(user));
+        when(userRepository.findByLastName(notExistingName)).thenReturn(Optional.empty());
 
-        User foundUser = userService.findByLastName(EXISTINGNAME);
+        User foundUser = userService.findByLastName(existingName);
         assertEquals(foundUser, user);
-        try {
-            userService.findByLastName(NOTEXISTINGENAME);
-        } catch (ItemNotFoundException e) {
-            Assertions.assertThat(e).isInstanceOf(ItemNotFoundException.class);
-        }
+        assertThrows(ItemNotFoundException.class, () -> userService.findByLastName(notExistingName));
     }
 
     @Test
     void findByActivationKey() {
-        final String EXISTINGKEY = "Rj341321312@11231234%!#1231@33122344553112";
-        final String NOTEXISTINGEKEY = "Bj341321312@11231234%!#1231@33122344553112";
-        when(userRepository.findByActivationKey(EXISTINGKEY)).thenReturn(java.util.Optional.ofNullable(user));
-        when(userRepository.findByActivationKey(NOTEXISTINGEKEY)).thenReturn(Optional.empty());
+        final String existingKey = "Rj341321312@11231234%!#1231@33122344553112";
+        final String notExistingKey = "Bj341321312@11231234%!#1231@33122344553112";
+        when(userRepository.findByActivationKey(existingKey)).thenReturn(java.util.Optional.ofNullable(user));
+        when(userRepository.findByActivationKey(notExistingKey)).thenReturn(Optional.empty());
 
-        User foundUser = userService.findByActivationKey(EXISTINGKEY);
+        User foundUser = userService.findByActivationKey(existingKey);
         assertEquals(foundUser, user);
-        try {
-            userService.findByActivationKey(NOTEXISTINGEKEY);
-        } catch (ItemNotFoundException e) {
-            Assertions.assertThat(e).isInstanceOf(ItemNotFoundException.class);
-        }
+        assertThrows(ItemNotFoundException.class, () -> userService.findByActivationKey(notExistingKey));
     }
 
     @Test
     void activate() throws Exception {
-        final String EXISTINGKEY = "Rj341321312@11231234%!#1231@33122344553112";
-        final String NOTEXISTINGEKEY = "Bj341321312@11231234%!#1231@33122344553112";
-        when(userRepository.findByActivationKey(EXISTINGKEY)).thenReturn(java.util.Optional.ofNullable(user));
-        when(userRepository.findByActivationKey(NOTEXISTINGEKEY)).thenReturn(Optional.empty());
+        final String existingKey = "Rj341321312@11231234%!#1231@33122344553112";
+        final String notExistingKey = "Bj341321312@11231234%!#1231@33122344553112";
+        when(userRepository.findByActivationKey(existingKey)).thenReturn(java.util.Optional.ofNullable(user));
+        when(userRepository.findByActivationKey(notExistingKey)).thenReturn(Optional.empty());
         when(userRepository.save(any())).thenReturn(user);
         user.setId(2L);
-        User foundUser = userService.activate(EXISTINGKEY);
+        User foundUser = userService.activate(existingKey);
         assertEquals(foundUser, user);
-        try {
-            userService.activate(NOTEXISTINGEKEY);
-        } catch (ItemNotFoundException e) {
-            Assertions.assertThat(e).isInstanceOf(ItemNotFoundException.class);
-        }
+        assertThrows(ItemNotFoundException.class, () -> userService.activate(notExistingKey));
     }
 }
