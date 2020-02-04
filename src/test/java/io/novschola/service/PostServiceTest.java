@@ -5,7 +5,6 @@ import io.novschola.exception.ItemNotFoundException;
 import io.novschola.model.Post;
 import io.novschola.model.User;
 import io.novschola.repositories.PostRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -82,11 +81,14 @@ class PostServiceTest {
         assertEquals(post, postService.update(post));
         verify(postRepository, times(1)).save(post);
         post.setId(null);
-        assertThrows(BadRequestException.class, ()->postService.update(post));
+        assertThrows(BadRequestException.class, () -> postService.update(post));
     }
 
     @Test
     void create() {
+        when(postRepository.findById(any())).thenReturn(java.util.Optional.ofNullable(post));
+        postService.create(post, new User());
+        verify(postRepository, times(1)).save(post);
     }
 
     @Test
