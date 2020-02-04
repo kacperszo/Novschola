@@ -8,7 +8,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
@@ -56,15 +55,23 @@ class PostServiceTest {
         List<Post> postList = new ArrayList<>();
         postList.add(post);
         when(postRepository.findAllByAuthor(any(), any())).thenReturn(new PageImpl<Post>(postList));
-        assertEquals(postList, postService.findAllByAuthor(new User(), PageRequest.of(0,1)).toList());
+        assertEquals(postList, postService.findAllByAuthor(new User(), PageRequest.of(0, 1)).toList());
     }
 
     @Test
     void findAllByAuthorId() {
+        List<Post> postList = new ArrayList<>();
+        postList.add(post);
+        when(postRepository.findAllByAuthor_Id(any(), any())).thenReturn(new PageImpl<Post>(postList));
+        assertEquals(postList, postService.findAllByAuthorId(2L, PageRequest.of(0, 1)).toList());
     }
 
     @Test
     void search() {
+        List<Post> postList = new ArrayList<>();
+        postList.add(post);
+        when(postRepository.findAllByContentContainingOrTitleContaining(any(), any(), any())).thenReturn(new PageImpl<Post>(postList));
+        assertEquals(postList, postService.search("", PageRequest.of(0, 1)).toList());
     }
 
     @Test
