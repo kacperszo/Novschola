@@ -17,7 +17,7 @@ public class PostService {
         this.postRepository = postRepository;
     }
 
-    public Post findById(Long id) {
+    public Post findById(Long id){
         return postRepository.findById(id).orElseThrow(ItemNotFoundException::new);
     }
 
@@ -54,11 +54,11 @@ public class PostService {
     }
 
     public void delete(Post post) {
-    postRepository.delete(post);
+        postRepository.delete(post);
     }
 
     public void deleteById(Long id) {
-
+        postRepository.deleteById(id);
     }
 
 }
