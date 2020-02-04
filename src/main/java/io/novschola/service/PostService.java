@@ -50,11 +50,11 @@ public class PostService {
     }
 
     public Page<Post> findAll(Pageable pageable) {
-        return null;
+        return postRepository.findAll(pageable);
     }
 
     public void delete(Post post) {
-
+    
     }
 
     public void deleteById(Long id) {
