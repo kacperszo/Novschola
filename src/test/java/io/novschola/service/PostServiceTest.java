@@ -100,6 +100,8 @@ class PostServiceTest {
 
     @Test
     void deleteById() {
+        postService.deleteById(2L);
+        verify(postRepository, times(1)).deleteById(2L);
     }
 
     @Test
@@ -107,7 +109,7 @@ class PostServiceTest {
         List<Post> postList = new ArrayList<>();
         postList.add(post);
         when(postRepository.findAll((Pageable) any())).thenReturn(new PageImpl<Post>(postList));
-        assertEquals(postList, postService.findAll( PageRequest.of(0, 1)).toList());
+        assertEquals(postList, postService.findAll(PageRequest.of(0, 1)).toList());
 
     }
 }
