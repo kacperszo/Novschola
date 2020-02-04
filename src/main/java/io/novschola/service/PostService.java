@@ -29,7 +29,8 @@ public class PostService {
     }
 
     public Page<Post> search(String query, Pageable pageable) {
-        return null;
+        /* we want to look for posts where title OR content contains given string */
+        return postRepository.findAllByContentContainingOrTitleContaining(query, query, pageable);
     }
 
     public Post update(Post post) {
