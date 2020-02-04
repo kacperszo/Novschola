@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -101,6 +102,10 @@ class PostServiceTest {
 
     @Test
     void findAll() {
+        List<Post> postList = new ArrayList<>();
+        postList.add(post);
+        when(postRepository.findAll((Pageable) any())).thenReturn(new PageImpl<Post>(postList));
+        assertEquals(postList, postService.findAll( PageRequest.of(0, 1)).toList());
 
     }
 }
