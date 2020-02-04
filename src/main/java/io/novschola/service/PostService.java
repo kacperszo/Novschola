@@ -24,7 +24,7 @@ public class PostService {
     }
 
     public Page<Post> findAllByAuthor(User author, Pageable pageable) {
-        return null;
+        return postRepository.findAllByAuthor(author,pageable);
     }
 
     public Page<Post> findAllByAuthorId(Long Id, Pageable pageable) {
