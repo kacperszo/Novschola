@@ -1,9 +1,11 @@
 package io.novschola.service;
 
+import io.novschola.exception.BadRequestException;
 import io.novschola.exception.ItemNotFoundException;
 import io.novschola.model.Post;
 import io.novschola.model.User;
 import io.novschola.repositories.PostRepository;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -19,7 +21,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class PostServiceTest {
 
@@ -76,6 +78,11 @@ class PostServiceTest {
 
     @Test
     void update() {
+        when(postRepository.save(any())).thenReturn(post);
+        assertEquals(post, postService.update(post));
+        verify(postRepository, times(1)).save(post);
+        post.setId(null);
+        assertThrows(BadRequestException.class, ()->postService.update(post));
     }
 
     @Test
