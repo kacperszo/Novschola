@@ -138,7 +138,7 @@ class UserServiceTest {
     }
 
     @Test
-    void activate() throws Exception {
+    void activate(){
         final String existingKey = "Rj341321312@11231234%!#1231@33122344553112";
         final String notExistingKey = "Bj341321312@11231234%!#1231@33122344553112";
         when(userRepository.findByActivationKey(existingKey)).thenReturn(java.util.Optional.ofNullable(user));

@@ -13,18 +13,16 @@ import org.mockito.MockitoAnnotations;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 class SchoolClassServiceTest {
 
-    //constants
-    final Long EXISTINGID = 2L;
-    final Long NONEXISTINGID = 3L;
-    final String NAME = "2c";
-    final List<User> STUDENTS = new ArrayList<>();
+    final Long existingId = 2L;
+    final Long notExistingId = 3L;
+    final String name = "2c";
+    final List<User> students = new ArrayList<>();
 
 
     @Mock
@@ -37,113 +35,50 @@ class SchoolClassServiceTest {
         MockitoAnnotations.initMocks(this);
         schoolClassService = new SchoolClassService(schoolClassRepository);
         schoolClass = new SchoolClass();
-        schoolClass.setId(EXISTINGID);
-        schoolClass.setName(NAME);
-        schoolClass.setStudents(STUDENTS);
+        schoolClass.setId(existingId);
+        schoolClass.setName(name);
+        schoolClass.setStudents(students);
     }
 
 
     @Test
-    void update() throws Exception {
+    void update() {
         when(schoolClassRepository.save(schoolClass)).thenReturn(schoolClass);
         when(schoolClassRepository.existsById(schoolClass.getId())).thenReturn(true);
-        when(schoolClassRepository.existsById(NONEXISTINGID)).thenReturn(false);
+        when(schoolClassRepository.existsById(notExistingId)).thenReturn(false);
 
         assertEquals(schoolClassService.update(schoolClass), schoolClass);
         SchoolClass newSchoolClass = new SchoolClass();
-        newSchoolClass.setName(NAME);
-        newSchoolClass.setStudents(STUDENTS);
-        try {
-            schoolClassService.update(newSchoolClass);
-        } catch (BadRequestException e) {
-            assertThat(e)
-                    .isInstanceOf(BadRequestException.class);
-        }
+        newSchoolClass.setName(name);
+        assertThrows(BadRequestException.class, () -> schoolClassService.update(newSchoolClass));
         SchoolClass notExistingSchoolClass = new SchoolClass();
-        notExistingSchoolClass.setId(NONEXISTINGID);
-        notExistingSchoolClass.setStudents(STUDENTS);
-        notExistingSchoolClass.setName(NAME);
-        try {
-            schoolClassService.update(notExistingSchoolClass);
-        } catch (ItemNotFoundException e) {
-            assertThat(e)
-                    .isInstanceOf(ItemNotFoundException.class);
-        }
+        notExistingSchoolClass.setId(notExistingId);
+        notExistingSchoolClass.setStudents(students);
+        notExistingSchoolClass.setName(name);
+        assertThrows(BadRequestException.class, () -> schoolClassService.update(notExistingSchoolClass));
     }
 
     @Test
-    void create() throws Exception {
-        schoolClass.setId(null);
+    void create() {
         when(schoolClassRepository.save(schoolClass)).thenReturn(schoolClass);
         assertEquals(schoolClassService.create(schoolClass), schoolClass);
-        SchoolClass existingSchoolClass = new SchoolClass();
-        existingSchoolClass.setId(EXISTINGID);
-        existingSchoolClass.setName(NAME);
-        existingSchoolClass.setStudents(STUDENTS);
-        try {
-            schoolClassService.create(existingSchoolClass);
-        } catch (BadRequestException e) {
-            assertThat(e).isInstanceOf(BadRequestException.class);
-        }
+        verify(schoolClassRepository, times(1)).save(any());
     }
 
     @Test
-    void updateAll() throws Exception {
-        when(schoolClassRepository.save(schoolClass)).thenReturn(schoolClass);
-        when(schoolClassRepository.existsById(schoolClass.getId())).thenReturn(true);
-        when(schoolClassRepository.existsById(NONEXISTINGID)).thenReturn(false);
-
-        List<SchoolClass> schoolClasses = new ArrayList<>();
-        SchoolClass notExistingSchoolClass = new SchoolClass();
-        notExistingSchoolClass.setId(NONEXISTINGID);
-        notExistingSchoolClass.setName(NAME);
-        notExistingSchoolClass.setStudents(STUDENTS);
-
-        schoolClasses.add(schoolClass);
-        schoolClasses.add(schoolClass);
-        schoolClassService.updateAll(schoolClasses);
-        verify(schoolClassRepository, times(1)).saveAll(schoolClasses);
-
-        schoolClasses.add(notExistingSchoolClass);
-
-        try {
-            assertEquals(schoolClasses, schoolClassService.updateAll(schoolClasses));
-        } catch (BadRequestException e) {
-            assertThat(e).isInstanceOf(BadRequestException.class);
-        }
-
-
+    void findById() {
+        when(schoolClassRepository.findById(existingId)).thenReturn(java.util.Optional.ofNullable(schoolClass));
+        when(schoolClassRepository.findById(notExistingId)).thenReturn(java.util.Optional.empty());
+        assertEquals(schoolClass, schoolClassService.findById(existingId));
+        assertThrows(ItemNotFoundException.class, () -> schoolClassService.findById(notExistingId));
     }
 
     @Test
-    void findById() throws Exception {
-        when(schoolClassRepository.findById(EXISTINGID)).thenReturn(java.util.Optional.ofNullable(schoolClass));
-        when(schoolClassRepository.findById(NONEXISTINGID)).thenReturn(java.util.Optional.empty());
-        assertEquals(schoolClass, schoolClassService.findById(EXISTINGID));
-        try {
-            schoolClassService.findById(NONEXISTINGID);
-        } catch (ItemNotFoundException e) {
-            assertThat(e).isInstanceOf(ItemNotFoundException.class);
-        }
-    }
-
-    @Test
-    void findByName() throws Exception {
-        when(schoolClassRepository.findByName(NAME)).thenReturn(java.util.Optional.ofNullable(schoolClass));
-        when(schoolClassRepository.findByName("NOTEXISTINGNAME")).thenReturn(java.util.Optional.empty());
-        assertEquals(schoolClass, schoolClassService.findByName(NAME));
-        try {
-            schoolClassService.findByName("NOTEXISTINGNAME");
-        } catch (ItemNotFoundException e) {
-            assertThat(e).isInstanceOf(ItemNotFoundException.class);
-        }
-    }
-
-    @Test
-    void existsById() {
-        when(schoolClassRepository.existsById(any())).thenReturn(true);
-        assertTrue(schoolClassService.existsById(EXISTINGID));
-        verify(schoolClassRepository, times(1)).existsById(EXISTINGID);
+    void findByName() {
+        when(schoolClassRepository.findByName(name)).thenReturn(java.util.Optional.ofNullable(schoolClass));
+        when(schoolClassRepository.findByName("not existing name")).thenReturn(java.util.Optional.empty());
+        assertEquals(schoolClass, schoolClassService.findByName(name));
+        assertThrows(ItemNotFoundException.class, () -> schoolClassService.findByName("not existing name"));
     }
 
     @Test
@@ -159,33 +94,14 @@ class SchoolClassServiceTest {
     }
 
     @Test
-    void count() {
-        schoolClassService.count();
-        verify(schoolClassRepository, times(1)).count();
-    }
-
-    @Test
     void deleteById() {
-        schoolClassService.deleteById(EXISTINGID);
+        schoolClassService.deleteById(existingId);
         verify(schoolClassRepository, times(1)).deleteById(any());
     }
 
     @Test
     void delete() {
-
         schoolClassService.delete(schoolClass);
         verify(schoolClassRepository, times(1)).delete(any());
-    }
-
-    @Test
-    void deleteAll() {
-        schoolClassService.deleteAll();
-        verify(schoolClassRepository, times(1)).deleteAll();
-    }
-
-    @Test
-    void testDeleteAll() {
-        schoolClassService.deleteAll(new ArrayList<SchoolClass>());
-        verify(schoolClassRepository, times(1)).deleteAll(any());
     }
 }

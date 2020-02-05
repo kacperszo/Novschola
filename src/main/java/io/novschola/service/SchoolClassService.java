@@ -4,12 +4,8 @@ import io.novschola.exception.BadRequestException;
 import io.novschola.exception.ItemNotFoundException;
 import io.novschola.model.SchoolClass;
 import io.novschola.repositories.SchoolClassRepository;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
-@Slf4j
 @Service
 public class SchoolClassService {
 
@@ -19,49 +15,26 @@ public class SchoolClassService {
         this.schoolClassRepository = schoolClassRepository;
     }
 
-    public SchoolClass update(SchoolClass schoolClass) throws Exception {
-        if (schoolClass.getId() == null) {
+    public SchoolClass update(SchoolClass schoolClass){
+        if (schoolClass.getId() == null || !schoolClassRepository.existsById(schoolClass.getId())) {
             throw new BadRequestException();
-        }
-        if (!schoolClassRepository.existsById(schoolClass.getId())) {
-            throw new ItemNotFoundException();
         }
         return schoolClassRepository.save(schoolClass);
     }
 
-    public SchoolClass create(SchoolClass schoolClass) throws Exception {
+    public SchoolClass create(SchoolClass schoolClass){
         schoolClass.setId(null);
         return schoolClassRepository.save(schoolClass);
     }
 
-    public Iterable<SchoolClass> updateAll(Iterable<SchoolClass> classes) throws Exception {
-        classes.forEach(schoolClass -> {
-            if (schoolClass.getId() == null || !schoolClassRepository.existsById(schoolClass.getId())) {
-                throw new BadRequestException();
-            }
-        });
-        return schoolClassRepository.saveAll(classes);
+    public SchoolClass findById(Long id) {
+        return schoolClassRepository.findById(id).orElseThrow(ItemNotFoundException::new);
     }
 
-    public SchoolClass findById(Long id) throws Exception {
-        Optional<SchoolClass> schoolClass = schoolClassRepository.findById(id);
-        if (schoolClass.isPresent()) {
-            return schoolClass.get();
-        }
-        throw new ItemNotFoundException();
+    public SchoolClass findByName(String name) {
+        return schoolClassRepository.findByName(name).orElseThrow(ItemNotFoundException::new);
     }
 
-    public SchoolClass findByName(String name) throws Exception {
-        Optional<SchoolClass> schoolClass = schoolClassRepository.findByName(name);
-        if (schoolClass.isPresent()) {
-            return schoolClass.get();
-        }
-        throw new ItemNotFoundException();
-    }
-
-    public Boolean existsById(Long id) {
-        return schoolClassRepository.existsById(id);
-    }
 
     public Iterable<SchoolClass> findAll() {
         return schoolClassRepository.findAll();
@@ -71,29 +44,12 @@ public class SchoolClassService {
         return schoolClassRepository.findAllById(idList);
     }
 
-    public Long count() {
-        return schoolClassRepository.count();
-    }
-
     public void deleteById(Long id) {
         schoolClassRepository.deleteById(id);
     }
 
     public void delete(SchoolClass schoolClass) {
         schoolClassRepository.delete(schoolClass);
-    }
-
-    public void deleteAll(Iterable<SchoolClass> classes) {
-        classes.forEach(schoolClass -> {
-            if (schoolClass.getId() == null || !schoolClassRepository.existsById(schoolClass.getId())) {
-                throw new BadRequestException();
-            }
-        });
-        schoolClassRepository.deleteAll(classes);
-    }
-
-    public void deleteAll() {
-        schoolClassRepository.deleteAll();
     }
 
 }
