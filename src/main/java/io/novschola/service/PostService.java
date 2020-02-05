@@ -17,7 +17,7 @@ public class PostService {
         this.postRepository = postRepository;
     }
 
-    public Post findById(Long id){
+    public Post findById(Long id) {
         return postRepository.findById(id).orElseThrow(ItemNotFoundException::new);
     }
 
@@ -35,7 +35,7 @@ public class PostService {
     }
 
     public Post update(Post post) {
-        if (post.getId() == null) {
+        if (post.getId() == null || !postRepository.existsById(post.getId())) {
             throw new BadRequestException();
         }
         return postRepository.save(post);
