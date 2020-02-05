@@ -58,14 +58,19 @@ class UserServiceTest {
     @Test
     void update() throws Exception {
         final String newLastName = "New Last Name";
-        final Long ID = 2L;
+        final Long existingId = 2L;
+        final Long notExistingId = 3L;
         when(userRepository.save(any())).thenReturn(user);
-        user.setId(ID);
+        when(userRepository.existsById(existingId)).thenReturn(true);
+        when(userRepository.existsById(notExistingId)).thenReturn(false);
+        user.setId(existingId);
         user.setLastName(newLastName);
         user = userService.update(this.user);
         verify(userRepository, times(1)).save(user);
         assertEquals(user.getLastName(), newLastName);
         user.setId(null);
+        assertThrows(BadRequestException.class, () -> userService.update(user));
+        user.setId(notExistingId);
         assertThrows(BadRequestException.class, () -> userService.update(user));
     }
 
@@ -138,15 +143,32 @@ class UserServiceTest {
     }
 
     @Test
-    void activate(){
+    void activate() {
+        final Long existingId = 2L;
+        final Long notExistingId = 3L;
         final String existingKey = "Rj341321312@11231234%!#1231@33122344553112";
         final String notExistingKey = "Bj341321312@11231234%!#1231@33122344553112";
+
         when(userRepository.findByActivationKey(existingKey)).thenReturn(java.util.Optional.ofNullable(user));
         when(userRepository.findByActivationKey(notExistingKey)).thenReturn(Optional.empty());
+        when(userRepository.existsById(existingId)).thenReturn(true);
+        when(userRepository.existsById(notExistingId)).thenReturn(false);
         when(userRepository.save(any())).thenReturn(user);
-        user.setId(2L);
+
+        user.setId(existingId);
         User foundUser = userService.activate(existingKey);
         assertEquals(foundUser, user);
         assertThrows(ItemNotFoundException.class, () -> userService.activate(notExistingKey));
+        user.setId(notExistingId);
+        assertThrows(BadRequestException.class, () -> userService.activate(existingKey));
+    }
+
+    @Test
+    void findAll() {
+        ArrayList<User> users = new ArrayList<>();
+        users.add(user);
+        when(userRepository.findAll()).thenReturn(users);
+        assertEquals(userService.findAll().get(0), users.get(0));
+        verify(userRepository, times(1)).findAll();
     }
 }

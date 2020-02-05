@@ -36,7 +36,7 @@ public class UserService {
     }
 
     public User update(User user) {
-        if (user.getId() == null) {
+        if (user.getId() == null || !userRepository.existsById(user.getId())) {
             throw new BadRequestException();
         }
         return userRepository.save(user);
@@ -51,9 +51,10 @@ public class UserService {
     }
 
     public List<User> getAllActive() {
-        Iterable<User> users = userRepository.findAllByActiveTrue();
         return StreamSupport
-                .stream(users.spliterator(), false)
+                .stream(userRepository.findAllByActiveTrue()
+                                .spliterator(),
+                        false)
                 .collect(Collectors.toList());
     }
 
@@ -73,6 +74,15 @@ public class UserService {
         User user = findByActivationKey(key);
         user.setActive(true);
         return update(user);
+    }
+
+    public List<User> findAll() {
+        return StreamSupport.
+                stream(userRepository.
+                                findAll().
+                                spliterator(),
+                        false)
+                .collect(Collectors.toList());
     }
 
 
