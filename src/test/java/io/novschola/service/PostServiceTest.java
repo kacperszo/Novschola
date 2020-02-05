@@ -78,10 +78,17 @@ class PostServiceTest {
 
     @Test
     void update() {
+        final Long existingId = 2L;
+        final Long notExistingId = 3L;
         when(postRepository.save(any())).thenReturn(post);
+        when(postRepository.existsById(existingId)).thenReturn(true);
+        when(postRepository.existsById(notExistingId)).thenReturn(false);
+        post.setId(existingId);
         assertEquals(post, postService.update(post));
         verify(postRepository, times(1)).save(post);
         post.setId(null);
+        assertThrows(BadRequestException.class, () -> postService.update(post));
+        post.setId(notExistingId);
         assertThrows(BadRequestException.class, () -> postService.update(post));
     }
 
