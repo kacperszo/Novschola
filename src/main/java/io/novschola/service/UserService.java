@@ -35,14 +35,14 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User update(User user) throws Exception {
+    public User update(User user) {
         if (user.getId() == null) {
             throw new BadRequestException();
         }
         return userRepository.save(user);
     }
 
-    public User findById(Long id) throws Exception {
+    public User findById(Long id) {
         return userRepository.findById(id).orElseThrow(ItemNotFoundException::new);
     }
 
@@ -69,7 +69,7 @@ public class UserService {
         return userRepository.findByActivationKey(key).orElseThrow(ItemNotFoundException::new);
     }
 
-    public User activate(String key) throws Exception {
+    public User activate(String key) {
         User user = findByActivationKey(key);
         user.setActive(true);
         return update(user);
