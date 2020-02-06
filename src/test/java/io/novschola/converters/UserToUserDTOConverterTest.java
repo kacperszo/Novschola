@@ -15,7 +15,9 @@ class UserToUserDTOConverterTest {
 
     @Test
     void convert() {
-        UserToUserDTOConverter converter = new UserToUserDTOConverter();
+        SchoolClassDTOtoSchoolClassConverter schoolClassDTOtoSchoolClassConverter = new SchoolClassDTOtoSchoolClassConverter();
+        SchoolClassToSchoolClassDTOConverter schoolClassToSchoolClassDTOConverter = new SchoolClassToSchoolClassDTOConverter();
+        UserToUserDTOConverter converter = new UserToUserDTOConverter(schoolClassToSchoolClassDTOConverter);
         User user = new User();
         Long id = 2L;
         LocalDateTime date = LocalDateTime.now();
@@ -47,6 +49,6 @@ class UserToUserDTOConverterTest {
         assertEquals(user.getFirstName(), userDTO.getFirstName());
         assertEquals(user.getLastName(), userDTO.getLastName());
         assertEquals(user.getBio(), userDTO.getBio());
-        assertEquals(user.getSchoolClass().getId(), userDTO.getSchoolClassId());
+        assertEquals(user.getSchoolClass(), schoolClassDTOtoSchoolClassConverter.convert(userDTO.getSchoolClass()));
     }
 }

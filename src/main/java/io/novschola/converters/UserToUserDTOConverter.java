@@ -6,6 +6,12 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class UserToUserDTOConverter implements Converter<User, UserDTO> {
+    private SchoolClassToSchoolClassDTOConverter converter;
+
+    public UserToUserDTOConverter(SchoolClassToSchoolClassDTOConverter converter) {
+        this.converter = converter;
+    }
+
     @Override
     public UserDTO convert(User from) {
         UserDTO userDTO = new UserDTO();
@@ -14,7 +20,7 @@ public class UserToUserDTOConverter implements Converter<User, UserDTO> {
         userDTO.setFirstName(from.getFirstName());
         userDTO.setLastName(from.getLastName());
         userDTO.setBio(from.getBio());
-        userDTO.setSchoolClassId(from.getSchoolClass().getId());
+        userDTO.setSchoolClass(converter.convert(from.getSchoolClass()));
         return userDTO;
     }
 }
