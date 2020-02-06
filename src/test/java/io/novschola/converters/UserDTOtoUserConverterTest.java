@@ -42,6 +42,7 @@ class UserDTOtoUserConverterTest {
     void setUp() {
         schoolClassDTOtoSchoolClassConverter = new SchoolClassDTOtoSchoolClassConverter();
         MockitoAnnotations.initMocks(this);
+        userDTOtoUserConverter = new UserDTOtoUserConverter(userService, schoolClassDTOtoSchoolClassConverter);
         user = new User();
         userDTO = new UserDTO();
         user.setId(id);
