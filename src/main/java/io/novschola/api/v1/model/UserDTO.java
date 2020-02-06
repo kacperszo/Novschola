@@ -1,5 +1,6 @@
 package io.novschola.api.v1.model;
 
+import io.novschola.model.SchoolClass;
 import lombok.Data;
 
 @Data
@@ -9,5 +10,5 @@ public class UserDTO {
     private String firstName;
     private String lastName;
     private String bio;
-    private String schoolClass;
+    private Long schoolClassId;
 }
