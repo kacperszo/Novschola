@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 @Data
 public class PostDTO {
     private Long id;
-    private Long authorId;
+    private UserDTO author;
     private String title;
     private String content;
     private LocalDateTime creationTime;
