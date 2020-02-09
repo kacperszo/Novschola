@@ -3,6 +3,7 @@ package io.novschola.converters;
 import io.novschola.api.v1.model.UserDTO;
 import io.novschola.model.SchoolClass;
 import io.novschola.model.User;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -12,26 +13,27 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class UserToUserDTOConverterTest {
+    SchoolClassDTOtoSchoolClassConverter schoolClassDTOtoSchoolClassConverter = new SchoolClassDTOtoSchoolClassConverter();
+    SchoolClassToSchoolClassDTOConverter schoolClassToSchoolClassDTOConverter = new SchoolClassToSchoolClassDTOConverter();
+    UserToUserDTOConverter converter = new UserToUserDTOConverter(schoolClassToSchoolClassDTOConverter);
+    User user = new User();
+    Long id = 2L;
+    LocalDateTime date = LocalDateTime.now();
+    boolean active = true;
+    String lastName = "John";
+    String firstName = "Doo";
+    String key = "asdasdasd1qe21ed31rt13341";
+    List<String> roles = new ArrayList<>();
+    SchoolClass clazz = new SchoolClass();
+    String email = "adas@asd.com";
+    String password = "Password";
+    String bio = "bio bio bio";
+    UserDTO userDTO;
 
-    @Test
-    void convert() {
-        SchoolClassDTOtoSchoolClassConverter schoolClassDTOtoSchoolClassConverter = new SchoolClassDTOtoSchoolClassConverter();
-        SchoolClassToSchoolClassDTOConverter schoolClassToSchoolClassDTOConverter = new SchoolClassToSchoolClassDTOConverter();
-        UserToUserDTOConverter converter = new UserToUserDTOConverter(schoolClassToSchoolClassDTOConverter);
-        User user = new User();
-        Long id = 2L;
-        LocalDateTime date = LocalDateTime.now();
-        boolean active = true;
-        String lastName = "John";
-        String firstName = "Doo";
-        String key = "asdasdasd1qe21ed31rt13341";
-        List<String> roles = new ArrayList<>();
-        SchoolClass clazz = new SchoolClass();
+    @BeforeEach
+    void setUp(){
         clazz.setId(id);
         clazz.setName("2c");
-        String email = "adas@asd.com";
-        String password = "Password";
-        String bio = "bio bio bio";
         user.setId(id);
         user.setCreateDate(date);
         user.setActive(active);
@@ -43,7 +45,12 @@ class UserToUserDTOConverterTest {
         user.setEmail(email);
         user.setPassword(password);
         user.setBio(bio);
-        UserDTO userDTO = converter.convert(user);
+
+    }
+
+    @Test
+    void convert() {
+        userDTO = converter.convert(user);
         assertEquals(user.getId(), userDTO.getId());
         assertEquals(user.getEmail(), userDTO.getEmail());
         assertEquals(user.getFirstName(), userDTO.getFirstName());
