@@ -85,5 +85,9 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
+    public boolean existsByEmail(String email){
+        return userRepository.existsByEmail(email);
+    }
+
 
 }
