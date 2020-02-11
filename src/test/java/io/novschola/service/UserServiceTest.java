@@ -17,8 +17,7 @@ import java.util.Optional;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -170,5 +169,16 @@ class UserServiceTest {
         when(userRepository.findAll()).thenReturn(users);
         assertEquals(userService.findAll().get(0), users.get(0));
         verify(userRepository, times(1)).findAll();
+    }
+
+    @Test
+    void existsByEmail() {
+        String existingEmail = "arara@ra.com";
+        String notExistingEmail = "lalalla@cadas.com";
+        when(userRepository.existsByEmail(existingEmail)).thenReturn(true);
+        when(userRepository.existsByEmail(notExistingEmail)).thenReturn(false);
+
+        assertTrue(userService.existsByEmail(existingEmail));
+        assertFalse(userService.existsByEmail(notExistingEmail));
     }
 }
