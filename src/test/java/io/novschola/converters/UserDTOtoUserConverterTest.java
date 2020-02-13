@@ -2,6 +2,7 @@ package io.novschola.converters;
 
 import io.novschola.api.v1.model.SchoolClassDTO;
 import io.novschola.api.v1.model.UserDTO;
+import io.novschola.model.Role;
 import io.novschola.model.SchoolClass;
 import io.novschola.model.User;
 import io.novschola.service.UserService;
@@ -29,7 +30,7 @@ class UserDTOtoUserConverterTest {
     String lastName = "John";
     String firstName = "Doo";
     String key = "asdasdasd1qe21ed31rt13341";
-    List<String> roles = new ArrayList<>();
+    List<Role> roles = new ArrayList<>();
     SchoolClass clazz = new SchoolClass();
     SchoolClassDTO clazzDTO = new SchoolClassDTO();
     String email = "adas@asd.com";

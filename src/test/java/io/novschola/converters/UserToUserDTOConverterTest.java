@@ -1,6 +1,7 @@
 package io.novschola.converters;
 
 import io.novschola.api.v1.model.UserDTO;
+import io.novschola.model.Role;
 import io.novschola.model.SchoolClass;
 import io.novschola.model.User;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +24,7 @@ class UserToUserDTOConverterTest {
     String lastName = "John";
     String firstName = "Doo";
     String key = "asdasdasd1qe21ed31rt13341";
-    List<String> roles = new ArrayList<>();
+    List<Role> roles = new ArrayList<>();
     SchoolClass clazz = new SchoolClass();
     String email = "adas@asd.com";
     String password = "Password";
