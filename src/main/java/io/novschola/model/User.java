@@ -26,6 +26,6 @@ public class User {
     @ManyToOne
     private SchoolClass schoolClass;
     private String activationKey;
-    @ElementCollection
-    private List<String> roles;
+    @ManyToMany
+    private List<Role> roles;
 }
