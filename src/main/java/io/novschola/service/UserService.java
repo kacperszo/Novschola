@@ -27,6 +27,9 @@ public class UserService {
     }
 
     public User create(User user) {
+        if(userRepository.existsByEmail(user.getEmail())){
+            throw new BadRequestException("user already exist");
+        }
         user.setId(null);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         user.setActivationKey(RandomStringUtils.randomAlphanumeric(20));
@@ -83,6 +86,10 @@ public class UserService {
                                 spliterator(),
                         false)
                 .collect(Collectors.toList());
+    }
+
+    public boolean existsByEmail(String email){
+        return userRepository.existsByEmail(email);
     }
 
 

@@ -14,17 +14,9 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotNull
-    @NotBlank
     private String email;
-    @NotNull
-    @NotBlank
     private String firstName;
-    @NotNull
-    @NotBlank
     private String lastName;
-    @NotNull
-    @NotBlank
     private String password;
     @Lob
     private String bio;
@@ -34,6 +26,6 @@ public class User {
     @ManyToOne
     private SchoolClass schoolClass;
     private String activationKey;
-    @ElementCollection
-    private List<String> roles;
+    @ManyToMany
+    private List<Role> roles;
 }
