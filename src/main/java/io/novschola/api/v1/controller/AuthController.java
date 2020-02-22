@@ -2,6 +2,7 @@ package io.novschola.api.v1.controller;
 
 import io.novschola.api.v1.model.JwtRequest;
 import io.novschola.api.v1.model.JwtResponse;
+import io.novschola.exception.BadCredentialsException;
 import io.novschola.model.User;
 import io.novschola.service.JwtTokenService;
 import io.novschola.service.UserService;
@@ -29,8 +30,12 @@ public class AuthController {
     }
 
     @PostMapping
-    public JwtResponse auth(@RequestBody JwtRequest jwtRequest) throws Exception {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(jwtRequest.getEmail(), jwtRequest.getPassword()));
+    public JwtResponse auth(@RequestBody JwtRequest jwtRequest) {
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(jwtRequest.getEmail(), jwtRequest.getPassword()));
+        }catch (Exception e){
+            throw new BadCredentialsException();
+        }
         User user = userService.findByEmail(jwtRequest.getEmail());
         return new JwtResponse(jwtTokenService.generateToken(user));
     }
