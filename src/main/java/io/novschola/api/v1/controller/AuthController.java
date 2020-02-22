@@ -6,6 +6,7 @@ import io.novschola.exception.BadCredentialsException;
 import io.novschola.model.User;
 import io.novschola.service.JwtTokenService;
 import io.novschola.service.UserService;
+import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -42,6 +43,8 @@ public class AuthController {
      * @return String when user is correctly authenticated controller returns jwt token
      */
     @PostMapping
+    @ApiOperation(value = "Authenticate user")
+
     public JwtResponse auth(@RequestBody JwtRequest jwtRequest) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(jwtRequest.getEmail(), jwtRequest.getPassword()));
