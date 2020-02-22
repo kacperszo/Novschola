@@ -6,6 +6,10 @@ import org.hibernate.annotations.CreationTimestamp;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+/**
+ * Post business model class
+ * @author Kacper Szot
+ */
 @Entity
 @Data
 public class Post {

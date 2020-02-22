@@ -3,7 +3,10 @@ package io.novschola.converters;
 import io.novschola.api.v1.model.SchoolClassDTO;
 import io.novschola.model.SchoolClass;
 import org.springframework.stereotype.Component;
-
+/**
+ * Class responsible for converting SchoolClass objects to SchoolClassDTO objects
+ * @author Kacper Szot
+ */
 @Component
 public class SchoolClassToSchoolClassDTOConverter implements Converter<SchoolClass, SchoolClassDTO> {
     @Override

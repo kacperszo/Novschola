@@ -13,7 +13,10 @@ import org.springframework.validation.annotation.Validated;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
+/**
+ * User service
+ * @author Kacper Szot
+ */
 @Service
 @Validated
 public class UserService {

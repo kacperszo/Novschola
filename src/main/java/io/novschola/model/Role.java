@@ -6,7 +6,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
+/**
+ * Role model class
+ * @author Kacper Szot
+ */
 @Entity
 public class Role implements GrantedAuthority {
     @Id

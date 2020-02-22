@@ -9,6 +9,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 
+/**
+ * Custom UserDetailsService
+ * @author Kacper Szot
+ */
 @Service
 public class JwtUserDetailsService implements UserDetailsService {
 
