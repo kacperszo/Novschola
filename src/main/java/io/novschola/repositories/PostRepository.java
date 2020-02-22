@@ -7,6 +7,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
+/**
+ * Post repository
+ * @author Kacper Szot
+ */
 @Repository
 public interface PostRepository  extends PagingAndSortingRepository<Post, Long> {
     Page<Post> findAllByContentContainingOrTitleContaining(String content, String title, Pageable pageable);

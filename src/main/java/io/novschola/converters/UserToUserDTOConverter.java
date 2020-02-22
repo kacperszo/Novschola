@@ -3,7 +3,10 @@ package io.novschola.converters;
 import io.novschola.api.v1.model.UserDTO;
 import io.novschola.model.User;
 import org.springframework.stereotype.Component;
-
+/**
+ * Class responsible for converting User objects to UserDTO objects
+ * @author Kacper Szot
+ */
 @Component
 public class UserToUserDTOConverter implements Converter<User, UserDTO> {
     private SchoolClassToSchoolClassDTOConverter converter;

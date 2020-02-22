@@ -5,7 +5,10 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import java.util.List;
-
+/**
+ * School class business model class
+ * @author Kacper Szot
+ */
 @Entity
 @Data
 public class SchoolClass {

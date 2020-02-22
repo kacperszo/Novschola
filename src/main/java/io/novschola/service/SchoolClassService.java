@@ -5,7 +5,10 @@ import io.novschola.exception.ItemNotFoundException;
 import io.novschola.model.SchoolClass;
 import io.novschola.repositories.SchoolClassRepository;
 import org.springframework.stereotype.Service;
-
+/**
+ * School class service
+ * @author Kacper Szot
+ */
 @Service
 public class SchoolClassService {
 

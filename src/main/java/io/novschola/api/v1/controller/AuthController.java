@@ -6,6 +6,7 @@ import io.novschola.exception.BadCredentialsException;
 import io.novschola.model.User;
 import io.novschola.service.JwtTokenService;
 import io.novschola.service.UserService;
+import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,6 +15,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+
+/**
+ * Authentication controller
+ * Rest controller responsible for user's authentication
+ * @author Kacper Szot
+ */
 @RestController
 @RequestMapping("v1/auth")
 @Slf4j
@@ -29,7 +36,15 @@ public class AuthController {
         this.jwtTokenService = jwtTokenService;
     }
 
+    /**
+     * Method is invoked when user sends a post request to auth endpoint, it's responsible for user's authentication and providing them a token.
+     * @exception BadCredentialsException when provided credentials are not correct controller throws a BadCredentialsException
+     * @param jwtRequest JwtRequest
+     * @return String when user is correctly authenticated controller returns jwt token
+     */
     @PostMapping
+    @ApiOperation(value = "Authenticate user")
+
     public JwtResponse auth(@RequestBody JwtRequest jwtRequest) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(jwtRequest.getEmail(), jwtRequest.getPassword()));

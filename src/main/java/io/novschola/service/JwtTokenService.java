@@ -17,6 +17,11 @@ import java.security.Key;
 import java.util.Date;
 import java.util.function.Function;
 
+/**
+ * Jwt token service class
+ * this service is responsible for generating and parsing jwt tokens
+ * @author Kacper Szot
+ */
 @Service
 @PropertySource("classpath:application.properties")
 @Slf4j

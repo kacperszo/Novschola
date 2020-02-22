@@ -5,7 +5,10 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
-
+/**
+ * User repository
+ * @author Kacper Szot
+ */
 @Repository
 public interface UserRepository extends CrudRepository<User, Long> {
     Iterable<User> findAllByActiveTrue();

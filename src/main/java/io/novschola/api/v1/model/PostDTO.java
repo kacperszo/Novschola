@@ -4,6 +4,11 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
+/**
+ * Post data transfer object class
+ * Objects of this class are returned by controllers instead of business' layer models
+ * @author Kacper Szot
+ */
 @Data
 public class PostDTO {
     private Long id;

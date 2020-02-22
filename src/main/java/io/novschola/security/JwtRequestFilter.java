@@ -21,6 +21,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import java.io.IOException;
 
+/**
+ * Custom GenericFilterBean used to authenticate user by jwt token
+ * @author Kacper Szot
+ */
 @Component
 @Slf4j
 public class JwtRequestFilter extends GenericFilterBean {

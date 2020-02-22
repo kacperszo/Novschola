@@ -9,6 +9,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+/**
+ * Post service
+ * @author Kacper Szot
+ */
 @Service
 public class PostService {
     private PostRepository postRepository;

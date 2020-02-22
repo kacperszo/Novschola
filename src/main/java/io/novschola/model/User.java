@@ -7,7 +7,10 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.List;
-
+/**
+ * User business model class
+ * @author Kacper Szot
+ */
 @Entity
 @Data
 public class User {
