@@ -2,6 +2,7 @@ package io.novschola.service;
 
 import io.novschola.exception.BadRequestException;
 import io.novschola.exception.ItemNotFoundException;
+import io.novschola.model.Role;
 import io.novschola.model.User;
 import io.novschola.repositories.UserRepository;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -10,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -38,14 +40,14 @@ public class UserService {
         user.setActivationKey(RandomStringUtils.randomAlphanumeric(20));
         user.setActive(false);
         user.setCreateDate(null);
-        return userRepository.save(user);
+        return userRepository.saveAndFlush(user);
     }
 
     public User update(User user) {
         if (user.getId() == null || !userRepository.existsById(user.getId())) {
             throw new BadRequestException();
         }
-        return userRepository.save(user);
+        return userRepository.saveAndFlush(user);
     }
 
     public User findById(Long id) {
@@ -83,12 +85,8 @@ public class UserService {
     }
 
     public List<User> findAll() {
-        return StreamSupport.
-                stream(userRepository.
-                                findAll().
-                                spliterator(),
-                        false)
-                .collect(Collectors.toList());
+        return new ArrayList<>(userRepository.
+                findAll());
     }
 
     public boolean existsByEmail(String email){
