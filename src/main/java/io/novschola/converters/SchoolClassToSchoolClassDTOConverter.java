@@ -11,6 +11,9 @@ import org.springframework.stereotype.Component;
 public class SchoolClassToSchoolClassDTOConverter implements Converter<SchoolClass, SchoolClassDTO> {
     @Override
     public SchoolClassDTO convert(SchoolClass from) {
+        if (from==null){
+            return null;
+        }
         SchoolClassDTO schoolClassDTO = new SchoolClassDTO();
         schoolClassDTO.setId(from.getId());
         schoolClassDTO.setName(from.getName());
