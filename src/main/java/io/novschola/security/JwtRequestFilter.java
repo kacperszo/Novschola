@@ -2,6 +2,7 @@ package io.novschola.security;
 
 import io.novschola.exception.BadJwtTokenException;
 import io.novschola.service.JwtTokenService;
+import io.novschola.service.JwtUserDetailsService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -30,10 +31,12 @@ import java.io.IOException;
 public class JwtRequestFilter extends GenericFilterBean {
 
     private JwtTokenService jwtTokenService;
-    private UserDetailsService userDetailsService;
+    private JwtUserDetailsService userDetailsService;
 
-    public JwtRequestFilter(AuthenticationManager authenticationManager, JwtTokenService jwtTokenService) {
+
+    public JwtRequestFilter(JwtTokenService jwtTokenService, JwtUserDetailsService userDetailsService) {
         this.jwtTokenService = jwtTokenService;
+        this.userDetailsService = userDetailsService;
     }
 
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest httpServletRequest) {
@@ -43,7 +46,7 @@ public class JwtRequestFilter extends GenericFilterBean {
                 String userEmail = jwtTokenService.getEmailFromToken(requestTokenHeader.replace("Bearer ", ""));
                 if (StringUtils.isNotEmpty(userEmail)) {
                     UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
-                    return new UsernamePasswordAuthenticationToken(userDetails.getUsername(), userDetails.getPassword(), userDetails.getAuthorities());
+                    return new UsernamePasswordAuthenticationToken(userDetails.getUsername(), userDetails.getPassword(), null);
                 }
             } catch (BadJwtTokenException | UsernameNotFoundException e) {
                 log.debug("unauthorized jwt token");
