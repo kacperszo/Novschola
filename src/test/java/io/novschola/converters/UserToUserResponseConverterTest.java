@@ -1,6 +1,6 @@
 package io.novschola.converters;
 
-import io.novschola.api.v1.model.UserDTO;
+import io.novschola.api.v1.model.dto.response.UserResponse;
 import io.novschola.model.Role;
 import io.novschola.model.SchoolClass;
 import io.novschola.model.User;
@@ -13,10 +13,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class UserToUserDTOConverterTest {
-    SchoolClassDTOtoSchoolClassConverter schoolClassDTOtoSchoolClassConverter = new SchoolClassDTOtoSchoolClassConverter();
-    SchoolClassToSchoolClassDTOConverter schoolClassToSchoolClassDTOConverter = new SchoolClassToSchoolClassDTOConverter();
-    UserToUserDTOConverter converter = new UserToUserDTOConverter(schoolClassToSchoolClassDTOConverter);
+class UserToUserResponseConverterTest {
+    SchoolClassResponseToSchoolClassConverter schoolClassResponseToSchoolClassConverter = new SchoolClassResponseToSchoolClassConverter();
+    SchoolClassToSchoolClassResponseConverter schoolClassToSchoolClassResponseConverter = new SchoolClassToSchoolClassResponseConverter();
+    UserToUserResponseConverter converter = new UserToUserResponseConverter(schoolClassToSchoolClassResponseConverter);
     User user = new User();
     Long id = 2L;
     LocalDateTime date = LocalDateTime.now();
@@ -29,7 +29,7 @@ class UserToUserDTOConverterTest {
     String email = "adas@asd.com";
     String password = "Password";
     String bio = "bio bio bio";
-    UserDTO userDTO;
+    UserResponse userResponse;
 
     @BeforeEach
     void setUp(){
@@ -51,12 +51,12 @@ class UserToUserDTOConverterTest {
 
     @Test
     void convert() {
-        userDTO = converter.convert(user);
-        assertEquals(user.getId(), userDTO.getId());
-        assertEquals(user.getEmail(), userDTO.getEmail());
-        assertEquals(user.getFirstName(), userDTO.getFirstName());
-        assertEquals(user.getLastName(), userDTO.getLastName());
-        assertEquals(user.getBio(), userDTO.getBio());
-        assertEquals(user.getSchoolClass(), schoolClassDTOtoSchoolClassConverter.convert(userDTO.getSchoolClass()));
+        userResponse = converter.convert(user);
+        assertEquals(user.getId(), userResponse.getId());
+        assertEquals(user.getEmail(), userResponse.getEmail());
+        assertEquals(user.getFirstName(), userResponse.getFirstName());
+        assertEquals(user.getLastName(), userResponse.getLastName());
+        assertEquals(user.getBio(), userResponse.getBio());
+        assertEquals(user.getSchoolClass(), schoolClassResponseToSchoolClassConverter.convert(userResponse.getSchoolClass()));
     }
 }

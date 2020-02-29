@@ -1,7 +1,7 @@
 package io.novschola.converters;
 
-import io.novschola.api.v1.model.SchoolClassDTO;
-import io.novschola.api.v1.model.UserDTO;
+import io.novschola.api.v1.model.dto.response.SchoolClassResponse;
+import io.novschola.api.v1.model.dto.response.UserResponse;
 import io.novschola.model.Role;
 import io.novschola.model.SchoolClass;
 import io.novschola.model.User;
@@ -18,12 +18,12 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
-class UserDTOtoUserConverterTest {
+class UserResponseToUserConverterTest {
 
-    SchoolClassDTOtoSchoolClassConverter schoolClassDTOtoSchoolClassConverter;
-    UserDTOtoUserConverter userDTOtoUserConverter;
+    SchoolClassResponseToSchoolClassConverter schoolClassResponseToSchoolClassConverter;
+    UserResponseToUserConverter userResponseToUserConverter;
     User user;
-    UserDTO userDTO;
+    UserResponse userResponse;
     Long id = 2L;
     LocalDateTime date = LocalDateTime.now();
     boolean active = true;
@@ -32,7 +32,7 @@ class UserDTOtoUserConverterTest {
     String key = "asdasdasd1qe21ed31rt13341";
     List<Role> roles = new ArrayList<>();
     SchoolClass clazz = new SchoolClass();
-    SchoolClassDTO clazzDTO = new SchoolClassDTO();
+    SchoolClassResponse clazzDTO = new SchoolClassResponse();
     String email = "adas@asd.com";
     String password = "Password";
     String bio = "bio bio bio";
@@ -41,28 +41,28 @@ class UserDTOtoUserConverterTest {
 
     @BeforeEach
     void setUp() {
-        schoolClassDTOtoSchoolClassConverter = new SchoolClassDTOtoSchoolClassConverter();
+        schoolClassResponseToSchoolClassConverter = new SchoolClassResponseToSchoolClassConverter();
         MockitoAnnotations.initMocks(this);
-        userDTOtoUserConverter = new UserDTOtoUserConverter(userService, schoolClassDTOtoSchoolClassConverter);
+        userResponseToUserConverter = new UserResponseToUserConverter(userService, schoolClassResponseToSchoolClassConverter);
         user = new User();
-        userDTO = new UserDTO();
+        userResponse = new UserResponse();
         user.setId(id);
-        userDTO.setId(id);
+        userResponse.setId(id);
         user.setCreateDate(date);
         user.setActive(active);
         user.setLastName(lastName);
-        userDTO.setLastName(lastName);
+        userResponse.setLastName(lastName);
         user.setFirstName(firstName);
-        userDTO.setFirstName(firstName);
+        userResponse.setFirstName(firstName);
         user.setActivationKey(key);
         user.setRoles(roles);
         user.setSchoolClass(clazz);
-        userDTO.setSchoolClass(clazzDTO);
+        userResponse.setSchoolClass(clazzDTO);
         user.setEmail(email);
-        userDTO.setEmail(email);
+        userResponse.setEmail(email);
         user.setPassword(password);
         user.setBio(bio);
-        userDTO.setBio(bio);
+        userResponse.setBio(bio);
         clazz.setId(id);
         clazz.setName("2c");
         clazzDTO.setId(id);
@@ -72,8 +72,8 @@ class UserDTOtoUserConverterTest {
     @Test
     void convert() {
         when(userService.findById(id)).thenReturn(user);
-        userDTO.setFirstName("new first name");
-        User convertedUser = userDTOtoUserConverter.convert(userDTO);
+        userResponse.setFirstName("new first name");
+        User convertedUser = userResponseToUserConverter.convert(userResponse);
         assertEquals(user.getId(), convertedUser.getId());
         assertEquals(user.getEmail(), convertedUser.getEmail());
         assertEquals("new first name", convertedUser.getFirstName());

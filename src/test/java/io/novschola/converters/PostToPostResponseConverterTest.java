@@ -1,6 +1,6 @@
 package io.novschola.converters;
 
-import io.novschola.api.v1.model.PostDTO;
+import io.novschola.api.v1.model.dto.response.PostResponse;
 import io.novschola.model.Post;
 import io.novschola.model.SchoolClass;
 import io.novschola.model.User;
@@ -12,25 +12,25 @@ import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class PostToPostDTOConverterTest {
+class PostToPostResponseConverterTest {
 
     final Long id = 2L;
     final LocalDateTime creationTime = LocalDateTime.now();
     final String title = "title";
     final String content = "Lorem ipsum";
     final String name = "Lorem ipsum";
-    PostToPostDTOConverter postToPostDTOConverter;
-    UserToUserDTOConverter userToUserDTOConverter;
-    SchoolClassToSchoolClassDTOConverter schoolClassToSchoolClassDTOConverter;
+    PostToPostResponseConverter postToPostResponseConverter;
+    UserToUserResponseConverter userToUserResponseConverter;
+    SchoolClassToSchoolClassResponseConverter schoolClassToSchoolClassResponseConverter;
     Post post;
     User author;
     SchoolClass schoolClass;
 
     @BeforeEach
     void setUp() {
-        schoolClassToSchoolClassDTOConverter = new SchoolClassToSchoolClassDTOConverter();
-        userToUserDTOConverter = new UserToUserDTOConverter(schoolClassToSchoolClassDTOConverter);
-        postToPostDTOConverter = new PostToPostDTOConverter(userToUserDTOConverter);
+        schoolClassToSchoolClassResponseConverter = new SchoolClassToSchoolClassResponseConverter();
+        userToUserResponseConverter = new UserToUserResponseConverter(schoolClassToSchoolClassResponseConverter);
+        postToPostResponseConverter = new PostToPostResponseConverter(userToUserResponseConverter);
 
         schoolClass = new SchoolClass();
         schoolClass.setId(id);
@@ -51,11 +51,11 @@ class PostToPostDTOConverterTest {
 
     @Test
     void convert() {
-        PostDTO postDTO = postToPostDTOConverter.convert(post);
-        assertEquals(postDTO.getId(), post.getId());
-        assertEquals(postDTO.getAuthor(), userToUserDTOConverter.convert(post.getAuthor()));
-        assertEquals(postDTO.getContent(), post.getContent());
-        assertEquals(postDTO.getCreationTime(), post.getCreationTime());
-        assertEquals(postDTO.getTitle(), post.getTitle());
+        PostResponse postResponse = postToPostResponseConverter.convert(post);
+        assertEquals(postResponse.getId(), post.getId());
+        assertEquals(postResponse.getAuthor(), userToUserResponseConverter.convert(post.getAuthor()));
+        assertEquals(postResponse.getContent(), post.getContent());
+        assertEquals(postResponse.getCreationTime(), post.getCreationTime());
+        assertEquals(postResponse.getTitle(), post.getTitle());
     }
 }

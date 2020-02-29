@@ -1,4 +1,4 @@
-package io.novschola.api.v1.model;
+package io.novschola.api.v1.model.dto.response;
 
 import lombok.Data;
 
@@ -10,9 +10,9 @@ import java.time.LocalDateTime;
  * @author Kacper Szot
  */
 @Data
-public class PostDTO {
+public class PostResponse {
     private Long id;
-    private UserDTO author;
+    private UserResponse author;
     private String title;
     private String content;
     private LocalDateTime creationTime;

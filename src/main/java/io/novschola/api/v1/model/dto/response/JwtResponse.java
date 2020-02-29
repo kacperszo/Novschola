@@ -1,4 +1,4 @@
-package io.novschola.api.v1.model;
+package io.novschola.api.v1.model.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

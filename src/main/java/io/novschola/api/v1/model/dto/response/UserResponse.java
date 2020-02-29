@@ -1,4 +1,4 @@
-package io.novschola.api.v1.model;
+package io.novschola.api.v1.model.dto.response;
 
 import lombok.Data;
 
@@ -8,11 +8,11 @@ import lombok.Data;
  * @author Kacper Szot
  */
 @Data
-public class UserDTO {
+public class UserResponse {
     private long id;
     private String email;
     private String firstName;
     private String lastName;
     private String bio;
-    private SchoolClassDTO schoolClass;
+    private SchoolClassResponse schoolClass;
 }

@@ -1,16 +1,16 @@
 package io.novschola.converters;
 
-import io.novschola.api.v1.model.SchoolClassDTO;
+import io.novschola.api.v1.model.dto.response.SchoolClassResponse;
 import io.novschola.model.SchoolClass;
 import org.springframework.stereotype.Component;
 /**
- * Class responsible for converting SchoolClassDTO objects to SchoolClass objects
+ * Class responsible for converting SchoolClassResponse objects to SchoolClass objects
  * @author Kacper Szot
  */
 @Component
-public class SchoolClassDTOtoSchoolClassConverter implements Converter<SchoolClassDTO, SchoolClass> {
+public class SchoolClassResponseToSchoolClassConverter implements Converter<SchoolClassResponse, SchoolClass> {
     @Override
-    public SchoolClass convert(SchoolClassDTO from) {
+    public SchoolClass convert(SchoolClassResponse from) {
         if (from==null){
             return null;
         }
