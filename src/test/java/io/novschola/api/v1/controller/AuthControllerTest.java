@@ -1,25 +1,27 @@
 package io.novschola.api.v1.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import io.novschola.api.v1.model.JwtRequest;
+import io.novschola.api.v1.model.dto.request.JwtRequest;
 import io.novschola.model.User;
 import io.novschola.service.JwtTokenService;
 import io.novschola.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
@@ -29,43 +31,104 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
-@WebMvcTest
+@SpringBootTest
+@AutoConfigureMockMvc
 class AuthControllerTest {
-
-    public static final MediaType APPLICATION_JSON_UTF8 = new MediaType(MediaType.APPLICATION_JSON.getType(), MediaType.APPLICATION_JSON.getSubtype(), StandardCharsets.UTF_8);
     @MockBean
     AuthenticationManager authenticationManager;
     @MockBean
     UserService userService;
     @MockBean
     JwtTokenService jwtTokenService;
+
     @Autowired
     private MockMvc mockMvc;
-    private String email = "email@email.com";
-    private String password = "password";
-    private AuthController authController;
+    Authentication authentication;
 
+    Authentication getAuthentication(){
+        return new Authentication() {
+            @Override
+            public Collection<? extends GrantedAuthority> getAuthorities() {
+                return null;
+            }
+
+            @Override
+            public Object getCredentials() {
+                return "password";
+            }
+
+            @Override
+            public Object getDetails() {
+                return null;
+            }
+
+            @Override
+            public Object getPrincipal() {
+                return null;
+            }
+
+            @Override
+            public boolean isAuthenticated() {
+                return true;
+            }
+
+            @Override
+            public void setAuthenticated(boolean b) throws IllegalArgumentException {
+
+            }
+
+            @Override
+            public String getName() {
+                return "user";
+            }
+        };
+    }
     @BeforeEach
     void setUp() {
-        when(userService.findByEmail(any())).thenReturn(new User());
-        when(jwtTokenService.generateToken(any())).thenReturn("token");
+        MockitoAnnotations.initMocks(this);
+        authentication = getAuthentication();
 
     }
 
     @Test
-    void auth() throws Exception {
-        JwtRequest jwtRequest = new JwtRequest();
-        jwtRequest.setEmail(email);
-        jwtRequest.setPassword(password);
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
-        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
-        String request = ow.writeValueAsString(jwtRequest);
+    void authWithCorrectCredentials() throws Exception {
+    when(authenticationManager.authenticate(any())).thenReturn(authentication);
+    when(userService.findByEmail(any())).thenReturn(new User());
+    when(jwtTokenService.generateToken(any())).thenReturn("VALID_TOKEN");
 
-        mockMvc.perform(post("/v1/auth").contentType(APPLICATION_JSON_UTF8).content(request))
-                .andDo(print()).andExpect(status().isOk()).andExpect(content().string(containsString("token")));
-        mockMvc.perform(post("/v1/auth")).andExpect(status().isBadRequest());
+        this.mockMvc
+                .perform(
+                        post("/v1/auth")
+                                .content(asJsonString(new JwtRequest()))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                )
+                
+                .andDo(print()).andExpect(status().isOk())
+                .andExpect(content().string(containsString("VALID_TOKEN")));
 
+    }
+    @Test
+    void authWithBadCredentials() throws Exception {
+        when(authenticationManager.authenticate(any())).thenThrow(new BadCredentialsException("wrong password"));
+
+        this.mockMvc
+                .perform(
+                        post("/v1/auth")
+                                .content(asJsonString(new JwtRequest()))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                )
+
+                .andDo(print()).andExpect(status().isUnauthorized());
+
+    }
+
+    private String asJsonString(final Object obj) {
+        try {
+            return new ObjectMapper().writeValueAsString(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

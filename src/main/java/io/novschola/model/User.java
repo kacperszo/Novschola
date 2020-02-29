@@ -2,10 +2,13 @@ package io.novschola.model;
 
 import com.sun.istack.NotNull;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.validator.constraints.UniqueElements;
+
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 /**
  * User business model class
@@ -13,10 +16,12 @@ import java.util.List;
  */
 @Entity
 @Data
+@NoArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(unique=true)
     private String email;
     private String firstName;
     private String lastName;
@@ -29,6 +34,14 @@ public class User {
     @ManyToOne
     private SchoolClass schoolClass;
     private String activationKey;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<Role> roles;
+
+    public User(String email, String firstName, String lastName, String password){
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.password = password;
+    }
+
 }

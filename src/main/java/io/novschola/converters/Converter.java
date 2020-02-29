@@ -10,7 +10,7 @@ public interface Converter<F,T> {
     /**
      * Method converts from class t to class f
      * @param from object to convert
-     * @return object of class T, converted from parameter
+     * @return object of class T, converted from argument
      */
     public T convert(F from);
 }

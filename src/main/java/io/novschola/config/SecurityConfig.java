@@ -6,6 +6,7 @@ import io.novschola.service.JwtUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -55,12 +56,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().httpBasic().and()
                 .authorizeRequests()
-                .antMatchers("/v1/auth",
-                        "/swagger-resources/**",
-                        "/swagger-ui.html",
-                        "/v1/api-docs",
-                        "/webjars/**")
-                .permitAll().anyRequest().authenticated().and().addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class).userDetailsService(jwtUserDetailsService);
+                .antMatchers(HttpMethod.POST,"/v1/auth").permitAll()
+                .antMatchers("/swagger-resources/**").permitAll()
+                .antMatchers( "/swagger-ui.html").permitAll()
+                .antMatchers("/v1/api-docs").permitAll()
+                .antMatchers("/webjars/**").permitAll()
+                .antMatchers(HttpMethod.GET,"/v1/users/*").permitAll()
+                .antMatchers(HttpMethod.GET,"/v1/users").permitAll()
+                .antMatchers(HttpMethod.POST,"/v1/users").permitAll()
+                .antMatchers(HttpMethod.PUT,"/v1/users/*").authenticated()
+                .and().addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class).userDetailsService(jwtUserDetailsService);
         http.exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint);
     }
 }

@@ -1,8 +1,8 @@
 package io.novschola.converters;
 
-import io.novschola.api.v1.model.PostDTO;
-import io.novschola.api.v1.model.SchoolClassDTO;
-import io.novschola.api.v1.model.UserDTO;
+import io.novschola.api.v1.model.dto.response.PostResponse;
+import io.novschola.api.v1.model.dto.response.SchoolClassResponse;
+import io.novschola.api.v1.model.dto.response.UserResponse;
 import io.novschola.model.Post;
 import io.novschola.model.SchoolClass;
 import io.novschola.model.User;
@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-class PostDTOToPostConverterTest {
+class PostResponseToPostConverterTest {
 
     private final String content = "lotrem ipsum";
     private final LocalDateTime creationTime = LocalDateTime.now();
@@ -29,11 +29,11 @@ class PostDTOToPostConverterTest {
     private final String lastName = "John";
     private final String firstName = "Doo";
 
-    PostDTOToPostConverter postDTOToPostConverter;
-    UserDTOtoUserConverter userDTOtoUserConverter;
-    SchoolClassDTOtoSchoolClassConverter schoolClassDTOtoSchoolClassConverter;
-    UserDTO userDTO;
-    PostDTO postDTO;
+    PostResponseToPostConverter postResponseToPostConverter;
+    UserResponseToUserConverter userResponseToUserConverter;
+    SchoolClassResponseToSchoolClassConverter schoolClassResponseToSchoolClassConverter;
+    UserResponse userResponse;
+    PostResponse postResponse;
     User user;
     @Mock
     UserService userService;
@@ -41,17 +41,17 @@ class PostDTOToPostConverterTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
-        schoolClassDTOtoSchoolClassConverter = new SchoolClassDTOtoSchoolClassConverter();
-        userDTOtoUserConverter = new UserDTOtoUserConverter(userService, schoolClassDTOtoSchoolClassConverter);
-        postDTOToPostConverter = new PostDTOToPostConverter(userDTOtoUserConverter);
-        userDTO = new UserDTO();
-        postDTO = new PostDTO();
-        postDTO.setAuthor(userDTO);
-        postDTO.setContent(content);
-        postDTO.setCreationTime(creationTime);
-        postDTO.setTitle(title);
-        postDTO.setId(id);
-        userDTO.setSchoolClass(new SchoolClassDTO());
+        schoolClassResponseToSchoolClassConverter = new SchoolClassResponseToSchoolClassConverter();
+        userResponseToUserConverter = new UserResponseToUserConverter(userService, schoolClassResponseToSchoolClassConverter);
+        postResponseToPostConverter = new PostResponseToPostConverter(userResponseToUserConverter);
+        userResponse = new UserResponse();
+        postResponse = new PostResponse();
+        postResponse.setAuthor(userResponse);
+        postResponse.setContent(content);
+        postResponse.setCreationTime(creationTime);
+        postResponse.setTitle(title);
+        postResponse.setId(id);
+        userResponse.setSchoolClass(new SchoolClassResponse());
         user=new User();
         user.setSchoolClass(new SchoolClass());
 
@@ -60,7 +60,7 @@ class PostDTOToPostConverterTest {
     @Test
     void convert() {
         when(userService.findById(any())).thenReturn(user);
-        Post post = postDTOToPostConverter.convert(postDTO);
+        Post post = postResponseToPostConverter.convert(postResponse);
         assertEquals(user, post.getAuthor());
         assertEquals(id, post.getId());
         assertEquals(content, post.getContent());
