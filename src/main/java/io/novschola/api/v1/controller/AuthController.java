@@ -1,7 +1,7 @@
 package io.novschola.api.v1.controller;
 
-import io.novschola.api.v1.model.JwtRequest;
-import io.novschola.api.v1.model.JwtResponse;
+import io.novschola.api.v1.model.dto.request.JwtRequest;
+import io.novschola.api.v1.model.dto.response.JwtResponse;
 import io.novschola.exception.BadCredentialsException;
 import io.novschola.model.User;
 import io.novschola.service.JwtTokenService;
