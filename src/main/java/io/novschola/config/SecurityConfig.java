@@ -61,10 +61,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers( "/swagger-ui.html").permitAll()
                 .antMatchers("/v1/api-docs").permitAll()
                 .antMatchers("/webjars/**").permitAll()
-                .antMatchers(HttpMethod.GET,"/v1/users/**").permitAll()
+                .antMatchers(HttpMethod.GET,"/v1/users/*").permitAll()
                 .antMatchers(HttpMethod.GET,"/v1/users").permitAll()
                 .antMatchers(HttpMethod.POST,"/v1/users").permitAll()
-                .antMatchers(HttpMethod.PUT,"/v1/users/**").authenticated()
+                .antMatchers(HttpMethod.PUT,"/v1/users/*").authenticated()
                 .and().addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class).userDetailsService(jwtUserDetailsService);
         http.exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint);
     }
