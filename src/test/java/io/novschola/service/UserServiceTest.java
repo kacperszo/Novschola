@@ -47,9 +47,9 @@ class UserServiceTest {
 
     @Test
     void create() {
-        when(userRepository.save(any())).thenReturn(user);
+        when(userRepository.saveAndFlush(any())).thenReturn(user);
         User newUSer = userService.create(this.user);
-        verify(userRepository, times(1)).save(any());
+        verify(userRepository, times(1)).saveAndFlush(any());
         Assert.notNull(newUSer.getActivationKey(), "activation key is null");
         assertThat(newUSer.getPassword(), not(equalTo(password)));
     }
@@ -59,13 +59,13 @@ class UserServiceTest {
         final String newLastName = "New Last Name";
         final Long existingId = 2L;
         final Long notExistingId = 3L;
-        when(userRepository.save(any())).thenReturn(user);
+        when(userRepository.saveAndFlush(any())).thenReturn(user);
         when(userRepository.existsById(existingId)).thenReturn(true);
         when(userRepository.existsById(notExistingId)).thenReturn(false);
         user.setId(existingId);
         user.setLastName(newLastName);
         user = userService.update(this.user);
-        verify(userRepository, times(1)).save(user);
+        verify(userRepository, times(1)).saveAndFlush(user);
         assertEquals(user.getLastName(), newLastName);
         user.setId(null);
         assertThrows(BadRequestException.class, () -> userService.update(user));
@@ -152,7 +152,7 @@ class UserServiceTest {
         when(userRepository.findByActivationKey(notExistingKey)).thenReturn(Optional.empty());
         when(userRepository.existsById(existingId)).thenReturn(true);
         when(userRepository.existsById(notExistingId)).thenReturn(false);
-        when(userRepository.save(any())).thenReturn(user);
+        when(userRepository.saveAndFlush(any())).thenReturn(user);
 
         user.setId(existingId);
         User foundUser = userService.activate(existingKey);
