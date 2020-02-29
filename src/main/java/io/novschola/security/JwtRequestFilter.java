@@ -46,7 +46,7 @@ public class JwtRequestFilter extends GenericFilterBean {
                 String userEmail = jwtTokenService.getEmailFromToken(requestTokenHeader.replace("Bearer ", ""));
                 if (StringUtils.isNotEmpty(userEmail)) {
                     UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
-                    return new UsernamePasswordAuthenticationToken(userDetails.getUsername(), userDetails.getPassword(), null);
+                    return new UsernamePasswordAuthenticationToken(userDetails.getUsername(), userDetails.getPassword(), userDetails.getAuthorities());
                 }
             } catch (BadJwtTokenException | UsernameNotFoundException e) {
                 log.debug("unauthorized jwt token");

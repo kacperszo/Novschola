@@ -2,7 +2,9 @@ package io.novschola.service;
 
 import io.novschola.exception.BadRequestException;
 import io.novschola.exception.ItemNotFoundException;
+import io.novschola.model.Role;
 import io.novschola.model.User;
+import io.novschola.repositories.RoleRepository;
 import io.novschola.repositories.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,6 +31,8 @@ class UserServiceTest {
 
     @Mock
     UserRepository userRepository;
+    @Mock
+    RoleRepository roleRepository;
     BCryptPasswordEncoder bCryptPasswordEncoder;
     UserService userService;
     User user;
@@ -37,7 +41,7 @@ class UserServiceTest {
     void setUp() {
         bCryptPasswordEncoder = new BCryptPasswordEncoder(16);
         MockitoAnnotations.initMocks(this);
-        userService = new UserService(userRepository, bCryptPasswordEncoder);
+        userService = new UserService(userRepository, roleRepository, bCryptPasswordEncoder);
         user = new User();
         user.setEmail(email);
         user.setFirstName(name);
@@ -48,6 +52,7 @@ class UserServiceTest {
     @Test
     void create() {
         when(userRepository.saveAndFlush(any())).thenReturn(user);
+        when(roleRepository.findRoleByRole(any())).thenReturn(new Role("USER_ROLE"));
         User newUSer = userService.create(this.user);
         verify(userRepository, times(1)).saveAndFlush(any());
         Assert.notNull(newUSer.getActivationKey(), "activation key is null");

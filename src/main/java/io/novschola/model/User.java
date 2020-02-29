@@ -21,7 +21,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @UniqueElements
+    @Column(unique=true)
     private String email;
     private String firstName;
     private String lastName;
@@ -34,8 +34,8 @@ public class User {
     @ManyToOne
     private SchoolClass schoolClass;
     private String activationKey;
-    @ManyToMany
-    private List<Role> roles = new ArrayList<>();
+    @ManyToMany(fetch = FetchType.EAGER)
+    private List<Role> roles;
 
     public User(String email, String firstName, String lastName, String password){
         this.email = email;

@@ -4,6 +4,7 @@ import io.novschola.exception.BadRequestException;
 import io.novschola.exception.ItemNotFoundException;
 import io.novschola.model.Role;
 import io.novschola.model.User;
+import io.novschola.repositories.RoleRepository;
 import io.novschola.repositories.UserRepository;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -23,11 +25,13 @@ import java.util.stream.StreamSupport;
 @Validated
 public class UserService {
     private UserRepository userRepository;
+    private RoleRepository roleRepository;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public UserService(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
@@ -35,11 +39,10 @@ public class UserService {
         if(userRepository.existsByEmail(user.getEmail())){
             throw new BadRequestException("user already exist");
         }
-        user.setId(null);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         user.setActivationKey(RandomStringUtils.randomAlphanumeric(20));
         user.setActive(false);
-        user.setCreateDate(null);
+        user.setRoles(Arrays.asList(roleRepository.findRoleByRole("ROLE_USER")));
         return userRepository.saveAndFlush(user);
     }
 
