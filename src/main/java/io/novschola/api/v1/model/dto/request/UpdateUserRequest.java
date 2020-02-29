@@ -12,11 +12,15 @@ import javax.validation.constraints.Size;
 @Data
 public class UpdateUserRequest {
     @NotBlank(message = "firstName cannot not be blank")
+    @NotNull(message = "firstName cannot be null")
     @Size(max = 50, message = "firstName length must be lower then 50")
     String firstName;
+
     @NotBlank(message = "lastName cannot be blank")
+    @NotNull(message = "lastName cannot be null")
     @Size(max = 50, message = "lastName length must be lower then 50")
     String lastName;
+
     @NotNull(message = "bio cannot be blank")
     String bio;
 }
