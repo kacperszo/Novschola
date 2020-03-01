@@ -78,4 +78,9 @@ public class UserController {
 
         return userToUserResponseConverter.convert(userService.update(user));
     }
+
+    @GetMapping("/{key}/activate")
+    public void activateUser(@PathVariable String key ){
+        userService.activate(key);
+    }
 }
