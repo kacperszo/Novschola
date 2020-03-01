@@ -22,7 +22,7 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -106,14 +106,15 @@ class UserControllerTest {
                         .content(asJsonString(createUserRequest))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
-                )
+        )
                 .andDo(print())
                 .andExpect(
                         status()
-                        .isCreated()
+                                .isCreated()
                 );
 
     }
+
     @Test
     void createUserShouldReturnHttp400() throws Exception {
 
@@ -161,6 +162,7 @@ class UserControllerTest {
                 );
 
     }
+
     @Test
     @WithMockUser(username = "test@test.com")
     void updateUserShouldReturnHttp400() throws Exception {
@@ -208,6 +210,27 @@ class UserControllerTest {
                                 .isForbidden()
                 );
 
+    }
+
+    @Test
+    void activateUserShouldReturn200OK() throws Exception {
+        when(userService.activate(any())).thenReturn(new User());
+
+        mockMvc.perform(get("/v1/users/1039123091293013/activate"))
+                .andDo(print())
+                .andExpect(status()
+                        .isOk());
+        verify(userService, times(1)).activate(any());
+    }
+
+    @Test
+    void activateUserShouldReturn404() throws Exception {
+        when(userService.activate(any())).thenThrow(new ItemNotFoundException());
+
+        mockMvc.perform(get("/v1/users/1039123091293013/activate"))
+                .andDo(print())
+                .andExpect(status()
+                        .isNotFound());
     }
 
     @Test
