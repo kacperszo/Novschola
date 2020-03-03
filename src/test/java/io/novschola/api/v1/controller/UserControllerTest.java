@@ -227,7 +227,7 @@ class UserControllerTest {
     void activateUserShouldReturn404() throws Exception {
         when(userService.activate(any())).thenThrow(new ItemNotFoundException());
 
-        mockMvc.perform(get("/v1/users/1039123091293013/activate"))
+        mockMvc.perform(get("/v1/users/activate/1039123091293013"))
                 .andDo(print())
                 .andExpect(status()
                         .isNotFound());
