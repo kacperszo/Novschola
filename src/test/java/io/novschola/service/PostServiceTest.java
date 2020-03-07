@@ -95,7 +95,7 @@ class PostServiceTest {
     @Test
     void create() {
         when(postRepository.findById(any())).thenReturn(java.util.Optional.ofNullable(post));
-        postService.create(post, new User());
+        postService.create(post);
         verify(postRepository, times(1)).save(post);
     }
 

@@ -42,15 +42,14 @@ public class PostService {
         if (post.getId() == null || !postRepository.existsById(post.getId())) {
             throw new BadRequestException();
         }
-        return postRepository.save(post);
+        return postRepository.saveAndFlush(post);
 
     }
 
-    public Post create(Post post, User author) {
+    public Post create(Post post) {
         post.setId(null);
         post.setCreationTime(null);
-        post.setAuthor(author);
-        return postRepository.save(post);
+        return postRepository.saveAndFlush(post);
     }
 
     public Page<Post> findAll(Pageable pageable) {
