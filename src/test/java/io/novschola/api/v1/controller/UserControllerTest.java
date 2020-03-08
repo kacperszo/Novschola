@@ -216,7 +216,7 @@ class UserControllerTest {
     void activateUserShouldReturn200OK() throws Exception {
         when(userService.activate(any())).thenReturn(new User());
 
-        mockMvc.perform(get("/v1/users/1039123091293013/activate"))
+        mockMvc.perform(get("/v1/users/activate/1039123091293013/"))
                 .andDo(print())
                 .andExpect(status()
                         .isOk());
