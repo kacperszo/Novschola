@@ -36,6 +36,8 @@ public class User {
     private String activationKey;
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Role> roles;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "author", fetch = FetchType.LAZY)
+    private List<Post> posts;
 
     public User(String email, String firstName, String lastName, String password){
         this.email = email;

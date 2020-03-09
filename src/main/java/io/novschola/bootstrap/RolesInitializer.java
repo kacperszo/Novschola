@@ -19,8 +19,7 @@ public class RolesInitializer implements ApplicationListener<ContextRefreshedEve
     @Override
     @Transactional
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-        Role userRole = new Role("ROLE_USER");
-
-        roleRepository.save(userRole);
+        roleRepository.save(new Role("ROLE_USER"));
+        roleRepository.save(new Role("ROLE_ADMIN"));
     }
 }
