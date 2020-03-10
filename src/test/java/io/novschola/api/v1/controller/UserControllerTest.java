@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.novschola.api.v1.model.dto.request.CreateUserRequest;
 import io.novschola.api.v1.model.dto.request.UpdateUserRequest;
 import io.novschola.exception.ItemNotFoundException;
+import io.novschola.model.Role;
 import io.novschola.model.User;
 import io.novschola.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -261,6 +262,27 @@ class UserControllerTest {
                 );
 
     }
+
+    @Test
+    @WithMockUser(username = "test@test.com")
+    void deletePostShouldReturnHttp200() throws Exception {
+        User user = new User();
+        user.setId(2L);
+        user.setEmail("test@test.com");
+        when(userService.findById(any())).thenReturn(user);
+
+        mockMvc.perform(
+                delete("/v1/users/2")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+        )
+                .andDo(print())
+                .andExpect(
+                        status()
+                                .isOk()
+                );
+    }
+
 
     private String asJsonString(final Object obj) {
         try {
