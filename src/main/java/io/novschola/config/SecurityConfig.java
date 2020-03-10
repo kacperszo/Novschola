@@ -57,11 +57,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().httpBasic().and()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST,"/v1/auth").permitAll()
-                .antMatchers("/swagger-resources/**").permitAll()
-                .antMatchers( "/swagger-ui.html").permitAll()
-                .antMatchers("/v1/api-docs").permitAll()
-                .antMatchers("/webjars/**").permitAll()
-
                 .antMatchers(HttpMethod.GET,"/v1/users/*").permitAll()
                 .antMatchers(HttpMethod.GET,"/v1/users/activate/*").permitAll()
                 .antMatchers(HttpMethod.GET,"/v1/users").permitAll()
@@ -69,13 +64,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET,"/v1/posts/*").permitAll()
                 .antMatchers(HttpMethod.GET,"/v1/posts").permitAll()
                 .antMatchers(HttpMethod.GET,"/v1/posts/search/*").permitAll()
-
                 .antMatchers(HttpMethod.PUT,"/v1/users/*").authenticated()
                 .antMatchers(HttpMethod.PUT,"/v1/posts/*").authenticated()
                 .antMatchers(HttpMethod.POST,"/v1/posts").authenticated()
                 .antMatchers(HttpMethod.DELETE,"/v1/posts/*").authenticated()
                 .antMatchers(HttpMethod.DELETE,"/v1/users/*").authenticated()
-                
                 .and().addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class).userDetailsService(jwtUserDetailsService);
         http.exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint);
     }
