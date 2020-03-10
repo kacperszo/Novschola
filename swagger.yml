@@ -1,0 +1,569 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Novaschola API
+tags:
+  - name: "users"
+    description: "User manipulation"
+  - name: "auth"
+    description: "User authentication"
+  - name: "posts"
+    description: "Post manipulation"
+servers:
+  - url: '{server}/v1'
+    variables:
+      server:
+        default: https://novschola.heroku.com
+paths:
+  /users:
+    post:
+      summary: Create new user
+      operationId: createUser
+      tags:
+        - users
+      requestBody:
+        description: Create new User
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - id
+                - name
+              properties:
+                email:
+                  type: string
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                password:
+                  type: string
+
+      responses:
+        '200':
+          description: Create new User
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/user"
+    get:
+      summary: Find all users
+      operationId: getUsers
+      tags:
+        - users
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/user'
+        default:
+          description: unexpected error
+  /users/activate/{key}:
+    get:
+      summary: Activate user by key
+      operationId: activateUser
+      tags:
+        - users
+      parameters:
+        - name: key
+          in: path
+          description: activation key of user to activate
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: "User activated correctly"
+        '404':
+          description: User with provided key cannot be found
+
+  /users/{id}:
+    put:
+      summary: Update existing user
+      description: can be done only by logged user
+      operationId: updateUser
+      tags:
+        - users
+      parameters:
+        - name: id
+          in: path
+          description: ID of user to update
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: ""
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - id
+                - name
+              properties:
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                bio:
+                  type: string
+
+      responses:
+        '200':
+          description: Updated existing user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/user"
+    get:
+      summary: Get user by id
+      operationId: getUser
+      tags:
+        - users
+      parameters:
+        - name: id
+          in: path
+          description: ID of user to get
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/user'
+        '404':
+          description: User with provided id cannot be found
+    delete:
+      summary: Delete user by id
+      description: can be done only by logged user
+      operationId: deleteUser
+      tags:
+        - users
+      parameters:
+        - name: id
+          in: path
+          description: ID of user to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/user'
+        '404':
+          description: User with provided id cannot be deleted
+  /users/{query}:
+    get:
+      summary: Search users
+      operationId: searchUsers
+      parameters:
+        - name: query
+          in: path
+          description: query to search
+          required: true
+          schema:
+            type: string
+      tags:
+        - users
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/user'
+  /auth:
+    post:
+      summary: login
+      description: login and get jwt access token
+      operationId: loginUser
+      tags:
+        - auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type : string
+        '401':
+          description: bad credentials
+  /posts:
+    get:
+      summary: Get all posts
+      operationId: getPosts
+      tags:
+        - posts
+      parameters:
+        - name: pageNo
+          in: query
+          required: false
+          description: Number of page
+
+          schema:
+            type: integer
+            format: int64
+        - name: pageSize
+          in: query
+          description: size of page
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: sortBy
+          in: query
+          description: sort by
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/post'
+                  pageable:
+                    type: array
+                    items:
+                      properties:
+                        sort:
+                          type: array
+                          items:
+                            properties:
+                              sorted:
+                                type: boolean
+                              unsorted:
+                                type: boolean
+                              empty:
+                                type: boolean
+                        offset:
+                          type: integer
+                        pageSize:
+                          type: integer
+                        pageNumber:
+                          type: integer
+                        unpaged:
+                          type: boolean
+                        paged:
+                          type: boolean
+                  last:
+                    type: boolean
+                  totalElements:
+                    type: integer
+                  totalPages:
+                    type: integer
+                  size:
+                    type: integer
+                  number:
+                    type: integer
+                  sort:
+                    type: array
+                    items:
+                      properties:
+                        sorted:
+                          type: boolean
+                        unsorted:
+                          type: boolean
+                        empty:
+                          type: boolean
+                  numberOfElements:
+                    type: integer
+                  first:
+                    type: boolean
+                  empty:
+                    type: boolean
+    post:
+      summary: Create new post
+      operationId: createPost
+      description: can be done only by logged user
+      tags:
+        - posts
+      requestBody:
+        description: Add new User
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - id
+                - name
+              properties:
+                title:
+                  type: string
+                content:
+                  type: string
+
+      responses:
+        '201':
+          description: Create new post
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/post"
+  /posts/{id}:
+    put:
+      summary: Update existing post
+      operationId: updatePost
+      description: can be done only by logged user
+      tags:
+        - posts
+      parameters:
+        - name: id
+          in: path
+          description: ID of post to update
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Update existing post
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - id
+                - name
+              properties:
+                title:
+                  type: string
+                content:
+                  type: string
+
+      responses:
+        '200':
+          description: Updated existing post
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/post"
+    get:
+      summary: Find post by id
+      operationId: getPost
+      tags:
+        - posts
+      parameters:
+        - name: id
+          in: path
+          description: ID of post to find
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/post'
+        '404':
+          description: Post with provided id cannot be find
+    delete:
+      summary: Delete post by id
+      operationId: deletePost
+      tags:
+        - posts
+      parameters:
+        - name: id
+          in: path
+          description: ID of post to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: "Post deleted correctly"
+        '404':
+          description: Post with provided id cannot be deleted
+  /posts/search/{query}:
+    get:
+      summary: Search posts
+      operationId: searchPosts
+      tags:
+        - posts
+      parameters:
+
+        - name: query
+          in: path
+          required: true
+          description: query to search
+          schema:
+            type: string
+
+        - name: pageNo
+          in: query
+          required: false
+          description: Number of page
+
+          schema:
+            type: integer
+            format: int64
+        - name: pageSize
+          in: query
+          description: size of page
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: sortBy
+          in: query
+          description: sort by
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/post'
+                  pageable:
+                    type: array
+                    items:
+                      properties:
+                        sort:
+                          type: array
+                          items:
+                            properties:
+                              sorted:
+                                type: boolean
+                              unsorted:
+                                type: boolean
+                              empty:
+                                type: boolean
+                        offset:
+                          type: integer
+                        pageSize:
+                          type: integer
+                        pageNumber:
+                          type: integer
+                        unpaged:
+                          type: boolean
+                        paged:
+                          type: boolean
+                  last:
+                    type: boolean
+                  totalElements:
+                    type: integer
+                  totalPages:
+                    type: integer
+                  size:
+                    type: integer
+                  number:
+                    type: integer
+                  sort:
+                    type: array
+                    items:
+                      properties:
+                        sorted:
+                          type: boolean
+                        unsorted:
+                          type: boolean
+                        empty:
+                          type: boolean
+                  numberOfElements:
+                    type: integer
+                  first:
+                    type: boolean
+                  empty:
+                    type: boolean
+components:
+  schemas:
+    school-class:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+    user:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        email:
+          type : string
+        firstName:
+          type: string
+        lastName:
+          type : string
+        bio:
+          type : string
+        schoolClass:
+          type : object
+          $ref: "#/components/schemas/school-class"
+    post:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        title:
+          type : string
+        content:
+          type: string
+        lastName:
+          type : string
+        creationTime:
+          type: string
+        author:
+          type : object
+          $ref: "#/components/schemas/user"
