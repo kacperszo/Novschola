@@ -17,6 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +54,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserResponse> createUser(@RequestBody @Valid CreateUserRequest request, BindingResult result) {
+    public ResponseEntity<UserResponse> createUser(@RequestBody @Valid CreateUserRequest request, BindingResult result) throws MessagingException {
 
         if (result.hasErrors()) {
             throw new BadRequestException(result);
