@@ -5,12 +5,15 @@ import io.novschola.api.v1.model.dto.request.UpdateUserRequest;
 import io.novschola.api.v1.model.dto.response.UserResponse;
 import io.novschola.converters.UserToUserResponseConverter;
 import io.novschola.exception.BadRequestException;
+import io.novschola.exception.ForbiddenException;
 import io.novschola.model.User;
+import io.novschola.repositories.RoleRepository;
 import io.novschola.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,10 +32,12 @@ import java.util.List;
 public class UserController {
     private UserService userService;
     private UserToUserResponseConverter userToUserResponseConverter;
+    private RoleRepository roleRepository;
 
-    public UserController(UserService userService, UserToUserResponseConverter userToUserResponseConverter) {
+    public UserController(UserService userService, UserToUserResponseConverter userToUserResponseConverter, RoleRepository roleRepository) {
         this.userService = userService;
         this.userToUserResponseConverter = userToUserResponseConverter;
+        this.roleRepository = roleRepository;
     }
 
     @GetMapping
@@ -82,5 +87,17 @@ public class UserController {
     @GetMapping("/activate/{key}")
     public void activateUser(@PathVariable String key ){
         userService.activate(key);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteUser(@PathVariable Long id, Authentication authentication) {
+
+        User user = userService.findById(id);
+        if (!(authentication.getName().equals(user.getEmail()) || authentication.getAuthorities().contains(roleRepository.findRoleByRole("ROLE_ADMIN")))) {
+            throw new ForbiddenException("Forbidden");
+        }
+
+        userService.delete(user);
+
     }
 }

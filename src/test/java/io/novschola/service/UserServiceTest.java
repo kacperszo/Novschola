@@ -186,4 +186,10 @@ class UserServiceTest {
         assertTrue(userService.existsByEmail(existingEmail));
         assertFalse(userService.existsByEmail(notExistingEmail));
     }
+
+    @Test
+    void delete() {
+        userService.delete(user);
+        verify(userRepository, times(1)).delete(user);
+    }
 }
