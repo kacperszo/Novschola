@@ -10,9 +10,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.util.Assert;
 
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.internet.MimeMessage;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -33,6 +37,8 @@ class UserServiceTest {
     UserRepository userRepository;
     @Mock
     RoleRepository roleRepository;
+    @Mock
+    JavaMailSender javaMailSender;
     BCryptPasswordEncoder bCryptPasswordEncoder;
     UserService userService;
     User user;
@@ -41,7 +47,7 @@ class UserServiceTest {
     void setUp() {
         bCryptPasswordEncoder = new BCryptPasswordEncoder(16);
         MockitoAnnotations.initMocks(this);
-        userService = new UserService(userRepository, roleRepository, bCryptPasswordEncoder);
+        userService = new UserService(userRepository, roleRepository, bCryptPasswordEncoder, javaMailSender,"http://127.0.0.1:8080");
         user = new User();
         user.setEmail(email);
         user.setFirstName(name);
@@ -50,9 +56,10 @@ class UserServiceTest {
     }
 
     @Test
-    void create() {
+    void create() throws MessagingException {
         when(userRepository.saveAndFlush(any())).thenReturn(user);
         when(roleRepository.findRoleByRole(any())).thenReturn(new Role("USER_ROLE"));
+        when(javaMailSender.createMimeMessage()).thenReturn(new MimeMessage((Session)null));
         User newUSer = userService.create(this.user);
         verify(userRepository, times(1)).saveAndFlush(any());
         Assert.notNull(newUSer.getActivationKey(), "activation key is null");
