@@ -8,10 +8,16 @@ import io.novschola.repositories.RoleRepository;
 import io.novschola.repositories.UserRepository;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -27,15 +33,20 @@ public class UserService {
     private UserRepository userRepository;
     private RoleRepository roleRepository;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private JavaMailSender javaMailSender;
+    private String novscholaUrl;
+
 
     @Autowired
-    public UserService(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public UserService(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder bCryptPasswordEncoder, JavaMailSender javaMailSender, @Value("${novschola.url}") String novscholaUrl) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.javaMailSender = javaMailSender;
+        this.novscholaUrl = novscholaUrl;
     }
 
-    public User create(User user) {
+    public User create(User user) throws MessagingException {
         if(userRepository.existsByEmail(user.getEmail())){
             throw new BadRequestException("user already exist");
         }
@@ -43,6 +54,18 @@ public class UserService {
         user.setActivationKey(RandomStringUtils.randomAlphanumeric(20));
         user.setActive(false);
         user.setRoles(Arrays.asList(roleRepository.findRoleByRole("ROLE_USER")));
+
+
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+
+        helper.setTo(user.getEmail());
+        helper.setSubject("Novschola account activation");
+        helper.setText("To activate account click <a href=\" "+novscholaUrl+"/v1/users/activate/"+user.getActivationKey()+"\"> here </a>", true);
+
+        javaMailSender.send(mimeMessage);
+
+
         return userRepository.saveAndFlush(user);
     }
 
