@@ -33,5 +33,5 @@ docker-build-to-dockerhub:
     - master
   script:
     - docker build -t kacperszo/novschola .
-    - docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD hub.docker.com
+    - docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
     - docker push kacperszo/novschola
