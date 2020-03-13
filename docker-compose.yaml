@@ -35,5 +35,6 @@ services:
       - mysqlPort=3306
       - mysqlHost=db
       - mysqlName=novschola
+      - startDelay=180
     depends_on:
       - db
