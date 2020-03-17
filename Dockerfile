@@ -10,6 +10,7 @@ ENV mysqlUsername="root"
 ENV mysqlHost="db"
 ENV mysqlPort="3306"
 ENV mysqlName="novschola"
+ENV startDelay="1"
 
 EXPOSE 8080
 
@@ -20,4 +21,4 @@ ADD wait-for-it.sh wait-for-it.sh
 RUN ["chmod","+x","./wait-for-it.sh"]
 ADD target/*.jar app.jar
 
-ENTRYPOINT ["./wait-for-it.sh", "$mysqlHost:$mysqlPort","--timeout=220","--","java","-Dspring.profiles.active=prod","-DJWT_SECRET=${jwtSecret}","-DSMTP-PASSWORD=${smtpPassword}","-DSMTP-USERNAME=${smtpUsername}","-DSMTP-HOST=${smtpHost}","-DSMTP-PORT=${smtpPort}","-DMYSQL-HOST=${mysqlHost}","-DMYSQL-PORT=${mysqlPort}","-DMYSQL-NAME=${mysqlName}","-DMYSQL-PASSWORD=${mysqlPassword}","-DMYSQL-USERNAME=${mysqlUsername}","-DNOVSCHOLA-URL=${baseUrl}","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
+ENTRYPOINT ./wait-for-it.sh "${mysqlHost}":"${mysqlPort}" --timeout=${startDelay} -- java -Dspring.profiles.active=prod -DJWT_SECRET="${jwtSecret}" -DSMTP-PASSWORD="${smtpPassword}" -DSMTP-USERNAME="${smtpUsername}" -DSMTP-HOST="${smtpHost}" -DSMTP-PORT="${smtpPort}" -DMYSQL-HOST="${mysqlHost}" -DMYSQL-PORT="${mysqlPort}" -DMYSQL-NAME="${mysqlName}" -DMYSQL-PASSWORD="${mysqlPassword}" -DMYSQL-USERNAME="${mysqlUsername}" -DNOVSCHOLA-URL="${baseUrl}" -Djava.security.egd=file:/dev/./urandom -jar /app.jar
