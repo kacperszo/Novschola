@@ -1,6 +1,9 @@
 package io.novschola.api.v1.model.dto.response;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
@@ -11,6 +14,9 @@ import java.time.LocalDateTime;
  * @author Kacper Szot
  */
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class CommentResponse {
     private Long id;
     private UserResponse author;
