@@ -390,12 +390,33 @@ class CommentServiceTest {
         assertEquals(commentService.findAllByAuthor(author).get(0), comments.get(0));
     }
 
-    @Test
-    void findAllByAuthorId() {
-    }
 
     @Test
-    void delete() {
+    void delete_correct_successful() {
+        //given
+        final Long id = 3L;
+        final String content = "Lorem ipusm";
+        final LocalDateTime creationTime = LocalDateTime.now();
+
+        final User author = User.builder().
+                id(id)
+                .build();
+
+        final Post post = Post.builder()
+                .id(id)
+                .author(author)
+                .build();
+
+        final Comment comment = Comment.builder()
+                .id(id)
+                .content(content)
+                .post(post)
+                .author(author)
+                .creationTime(creationTime)
+                .build();
+
+        commentService.delete(comment);
+        verify(commentRepository, times(1)).delete(comment);
 
     }
 
