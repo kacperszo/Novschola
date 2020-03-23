@@ -55,7 +55,7 @@ public class CommentService {
     }
 
     public List<Comment> findAllByPostId(Long id) {
-        return null;
+        return commentRepository.findAllByPostId(id);
     }
 
     public List<Comment> findAllByAuthor(User author) {
