@@ -64,7 +64,7 @@ class PostServiceTest {
     void findAllByAuthorId() {
         List<Post> postList = new ArrayList<>();
         postList.add(post);
-        when(postRepository.findAllByAuthor_Id(any(), any())).thenReturn(new PageImpl<Post>(postList));
+        when(postRepository.findAllByAuthorId(any(), any())).thenReturn(new PageImpl<Post>(postList));
         assertEquals(postList, postService.findAllByAuthorId(2L, PageRequest.of(0, 1)).toList());
     }
 
