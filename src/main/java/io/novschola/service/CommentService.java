@@ -10,6 +10,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * comment service
+ *
+ * @author Kacper Szot
+ */
 @Service
 public class CommentService {
 
@@ -47,7 +52,7 @@ public class CommentService {
     }
 
     public void deleteById(Long id) {
-
+        commentRepository.deleteById(id);
     }
 
     public List<Comment> findAllByPost(Post post) {

@@ -422,6 +422,31 @@ class CommentServiceTest {
 
     @Test
     void deleteById() {
+        //given
+        final Long id = 3L;
+        final String content = "Lorem ipusm";
+        final LocalDateTime creationTime = LocalDateTime.now();
+
+        final User author = User.builder().
+                id(id)
+                .build();
+
+        final Post post = Post.builder()
+                .id(id)
+                .author(author)
+                .build();
+
+        final Comment comment = Comment.builder()
+                .id(id)
+                .content(content)
+                .post(post)
+                .author(author)
+                .creationTime(creationTime)
+                .build();
+
+        commentService.deleteById(id);
+        verify(commentRepository, times(1)).deleteById(id);
+
 
     }
 }
