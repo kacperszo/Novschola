@@ -38,14 +38,6 @@ public class CommentService {
         return commentRepository.findById(id).orElseThrow(ItemNotFoundException::new);
     }
 
-    public Comment findByAuthorId(Long id) {
-        return null;
-    }
-
-    public Comment findByAuthor(User user) {
-        return null;
-    }
-
     public List<Comment> findAll() {
         return null;
     }
@@ -71,7 +63,7 @@ public class CommentService {
     }
 
     public List<Comment> findAllByAuthorId(Long id) {
-        return null;
+        return commentRepository.findAllByAuthorId(id);
     }
 
 }

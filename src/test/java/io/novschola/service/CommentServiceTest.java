@@ -11,7 +11,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.lang.reflect.Array;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -29,7 +32,7 @@ class CommentServiceTest {
     }
 
     @Test
-    void create_correct_endSuccessful() {
+    void create_correct_Successful() {
         //given
         final Long id = 3L;
         final String content = "Lorem ipusm";
@@ -71,7 +74,7 @@ class CommentServiceTest {
     }
 
     @Test
-    void update_correct_endSuccessful() {
+    void update_correct_Successful() {
         //given
         final Long id = 3L;
         final String content = "Lorem ipusm";
@@ -167,7 +170,7 @@ class CommentServiceTest {
     }
 
     @Test
-    void findById_correct_endSuccessful() {
+    void findById_correct_Successful() {
         //given
         final Long id = 3L;
         final String content = "Lorem ipusm";
@@ -228,7 +231,35 @@ class CommentServiceTest {
     }
 
     @Test
-    void findByAuthorId() {
+    void findByAuthorId_correct_Successful() {
+        //given
+        final Long id = 3L;
+        final String content = "Lorem ipusm";
+        final LocalDateTime creationTime = LocalDateTime.now();
+
+        final User author = User.builder().
+                id(id)
+                .build();
+
+        final Post post = Post.builder()
+                .id(id)
+                .author(author)
+                .build();
+
+        final Comment comment = Comment.builder()
+                .id(id)
+                .content(content)
+                .post(post)
+                .author(author)
+                .creationTime(creationTime)
+                .build();
+
+        ArrayList<Comment> comments = new ArrayList<>();
+        comments.add(comment);
+        //when
+        when(commentRepository.findAllByAuthorId(any())).thenReturn(comments);
+        //then
+        assertEquals(commentService.findAllByAuthorId(id).get(0), comments.get(0));
     }
 
     @Test
