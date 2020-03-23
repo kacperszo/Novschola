@@ -1,6 +1,7 @@
 package io.novschola.service;
 
 import io.novschola.exception.BadRequestException;
+import io.novschola.exception.ItemNotFoundException;
 import io.novschola.model.Comment;
 import io.novschola.model.Post;
 import io.novschola.model.User;
@@ -34,7 +35,7 @@ public class CommentService {
 
     public Comment findById(Long id) {
 
-        return null;
+        return commentRepository.findById(id).orElseThrow(ItemNotFoundException::new);
     }
 
     public Comment findByAuthorId(Long id) {
