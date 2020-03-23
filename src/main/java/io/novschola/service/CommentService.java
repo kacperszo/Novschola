@@ -39,7 +39,7 @@ public class CommentService {
     }
 
     public List<Comment> findAll() {
-        return null;
+        return commentRepository.findAll();
     }
 
     public void delete(Comment comment) {

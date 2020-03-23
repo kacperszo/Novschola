@@ -263,11 +263,35 @@ class CommentServiceTest {
     }
 
     @Test
-    void findByAuthor() {
-    }
+    void findAll_correct_Successful() {
+        //given
+        final Long id = 3L;
+        final String content = "Lorem ipusm";
+        final LocalDateTime creationTime = LocalDateTime.now();
 
-    @Test
-    void findAll() {
+        final User author = User.builder().
+                id(id)
+                .build();
+
+        final Post post = Post.builder()
+                .id(id)
+                .author(author)
+                .build();
+
+        final Comment comment = Comment.builder()
+                .id(id)
+                .content(content)
+                .post(post)
+                .author(author)
+                .creationTime(creationTime)
+                .build();
+
+        ArrayList<Comment> comments = new ArrayList<>();
+        comments.add(comment);
+        //when
+        when(commentRepository.findAll()).thenReturn(comments);
+        //then
+        assertEquals(commentService.findAll().get(0), comments.get(0));
     }
 
     @Test
