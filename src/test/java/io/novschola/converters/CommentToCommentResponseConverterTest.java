@@ -29,7 +29,7 @@ class CommentToCommentResponseConverterTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
-        commentToCommentResponseConverter = new CommentToCommentResponseConverter(userToUserResponseConverter, postToPostResponseConverter);
+        commentToCommentResponseConverter = new CommentToCommentResponseConverter(userToUserResponseConverter);
     }
 
     @Test
@@ -70,6 +70,5 @@ class CommentToCommentResponseConverterTest {
         assertEquals(commentResponse.getAuthor(), userResponse);
         assertEquals(commentResponse.getContent(), content);
         assertEquals(commentResponse.getCreationTime(), creationTime);
-        assertEquals(commentResponse.getPost(), postResponse);
     }
 }

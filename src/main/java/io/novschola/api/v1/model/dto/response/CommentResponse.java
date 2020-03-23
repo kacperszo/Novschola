@@ -20,7 +20,6 @@ import java.time.LocalDateTime;
 public class CommentResponse {
     private Long id;
     private UserResponse author;
-    private PostResponse post;
     private String content;
     private LocalDateTime creationTime;
 }

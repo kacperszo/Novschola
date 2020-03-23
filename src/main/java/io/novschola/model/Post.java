@@ -8,6 +8,8 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Post business model class
@@ -29,4 +31,6 @@ public class Post {
     private String content;
     @CreationTimestamp
     private LocalDateTime creationTime;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "post", fetch = FetchType.LAZY)
+    List<Comment> comments = new ArrayList<>();
 }

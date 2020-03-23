@@ -12,11 +12,9 @@ import org.springframework.stereotype.Component;
 public class CommentToCommentResponseConverter implements Converter<Comment, CommentResponse> {
 
     private UserToUserResponseConverter userToUserResponseConverter;
-    private PostToPostResponseConverter postToPostResponseConverter;
 
-    public CommentToCommentResponseConverter(UserToUserResponseConverter userToUserResponseConverter, PostToPostResponseConverter postToPostResponseConverter) {
+    public CommentToCommentResponseConverter(UserToUserResponseConverter userToUserResponseConverter) {
         this.userToUserResponseConverter = userToUserResponseConverter;
-        this.postToPostResponseConverter = postToPostResponseConverter;
     }
 
     @Override
@@ -24,7 +22,6 @@ public class CommentToCommentResponseConverter implements Converter<Comment, Com
     return CommentResponse
             .builder()
             .author(userToUserResponseConverter.convert(from.getAuthor()))
-            .post(postToPostResponseConverter.convert(from.getPost()))
             .id(from.getId())
             .content(from.getContent())
             .creationTime(from.getCreationTime())

@@ -2,6 +2,7 @@ package io.novschola.converters;
 
 import io.novschola.api.v1.model.dto.response.CommentResponse;
 import io.novschola.model.Comment;
+import io.novschola.service.CommentService;
 import org.springframework.stereotype.Component;
 
 /**
@@ -13,24 +14,20 @@ import org.springframework.stereotype.Component;
 public class CommentResponseToCommentConverter implements Converter<CommentResponse, Comment> {
 
     private UserResponseToUserConverter userResponseToUserConverter;
-    private PostResponseToPostConverter postResponseToPostConverter;
+    private CommentService commentService;
 
-    public CommentResponseToCommentConverter(UserResponseToUserConverter userResponseToUserConverter, PostResponseToPostConverter postResponseToPostConverter) {
+    public CommentResponseToCommentConverter(UserResponseToUserConverter userResponseToUserConverter , CommentService commentService) {
         this.userResponseToUserConverter = userResponseToUserConverter;
-        this.postResponseToPostConverter = postResponseToPostConverter;
+        this.commentService = commentService;
     }
 
     @Override
     public Comment convert(CommentResponse from) {
-        return Comment
-                .builder()
-                .id(from.getId())
-                .author(userResponseToUserConverter
-                        .convert(from.getAuthor()))
-                .post(postResponseToPostConverter
-                        .convert(from.getPost()))
-                .content(from.getContent())
-                .creationTime(from.getCreationTime())
-                .build();
+        Comment comment = commentService.findById(from.getId());
+        comment.setId(from.getId());
+        comment.setCreationTime(from.getCreationTime());
+        comment.setAuthor(userResponseToUserConverter.convert(from.getAuthor()));
+        comment.setContent(from.getContent());
+        return comment;
     }
 }
