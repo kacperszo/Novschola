@@ -51,7 +51,7 @@ public class CommentService {
     }
 
     public List<Comment> findAllByPost(Post post) {
-        return null;
+        return commentRepository.findAllByPost(post);
     }
 
     public List<Comment> findAllByPostId(Long id) {
