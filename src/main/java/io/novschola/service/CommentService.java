@@ -59,7 +59,7 @@ public class CommentService {
     }
 
     public List<Comment> findAllByAuthor(User author) {
-        return null;
+        return commentRepository.findAllByAuthor(author);
     }
 
     public List<Comment> findAllByAuthorId(Long id) {
