@@ -25,10 +25,15 @@ public class CommentService {
     }
 
     public Comment update(Comment comment) {
-        return null;
+
+        if (comment.getId() == null || !commentRepository.existsById(comment.getId())) {
+            throw new BadRequestException();
+        }
+        return commentRepository.save(comment);
     }
 
     public Comment findById(Long id) {
+
         return null;
     }
 
