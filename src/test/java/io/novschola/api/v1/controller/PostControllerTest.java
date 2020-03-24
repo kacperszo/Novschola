@@ -22,14 +22,12 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.mockito.Mockito.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -98,6 +96,7 @@ class PostControllerTest {
                                 .string(containsString("testTitle"))
                 );
     }
+
     @Test
     void getPostShouldReturn404() throws Exception {
         when(postService.findById(any())).thenThrow(new ItemNotFoundException());
@@ -113,7 +112,7 @@ class PostControllerTest {
         List<Post> postList = new ArrayList<>();
         postList.add(post);
 
-        when(postService.search(any(),any())).thenReturn(new PageImpl<Post>(postList));
+        when(postService.search(any(), any())).thenReturn(new PageImpl<Post>(postList));
         mockMvc.
                 perform(get("/v1/posts/search/test"))
                 .andDo(print())
@@ -203,6 +202,7 @@ class PostControllerTest {
                 content()
                         .string(containsString("test@test.com")));
     }
+
     @Test
     @WithMockUser(username = "test@test.com")
     void updatePostShouldReturnHttp404() throws Exception {
@@ -225,6 +225,7 @@ class PostControllerTest {
                                 .isNotFound()
                 );
     }
+
     @Test
     @WithMockUser(username = "test@test.com")
     void updatePostShouldReturnHttp400() throws Exception {
@@ -262,6 +263,7 @@ class PostControllerTest {
                                 .isUnauthorized()
                 );
     }
+
     @Test
     @WithMockUser(username = "bad@test.com")
     void updatePostShouldReturnHttp403() throws Exception {
@@ -284,8 +286,9 @@ class PostControllerTest {
                                 .isForbidden()
                 );
     }
+
     @Test
-    @WithMockUser(username="admin",roles="ADMIN")
+    @WithMockUser(username = "admin", roles = "ADMIN")
     void updatePostShouldReturnHttp200AdminAccess() throws Exception {
 
         when(postService.update(any())).thenReturn(post);
@@ -329,7 +332,7 @@ class PostControllerTest {
     @Test
     @WithMockUser(username = "test@test.com")
     void deletePostShouldReturnHttp404() throws Exception {
-        when(postService.findById(any())).thenThrow( new ItemNotFoundException());
+        when(postService.findById(any())).thenThrow(new ItemNotFoundException());
         when(roleRepository.findRoleByRole("ROLE_ADMIN")).thenReturn(new Role("ROLE_ADMIN"));
         mockMvc.perform(
                 delete("/v1/posts/2")
@@ -360,7 +363,6 @@ class PostControllerTest {
                                 .isForbidden()
                 );
     }
-
 
 
     private String asJsonString(final Object obj) {

@@ -16,5 +16,5 @@ import org.springframework.stereotype.Repository;
 public interface PostRepository  extends JpaRepository<Post, Long> {
     Page<Post> findAllByContentContainingOrTitleContaining(String content, String title, Pageable pageable);
     Page<Post> findAllByAuthor(User author, Pageable pageable);
-    Page<Post> findAllByAuthor_Id(Long authorId, Pageable pageable);
+    Page<Post> findAllByAuthorId(Long authorId, Pageable pageable);
 }
