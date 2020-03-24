@@ -104,7 +104,7 @@ public class PostController {
     public void deletePost(@PathVariable Long id, Authentication authentication) {
 
         Post post = postService.findById(id);
-        if (!(authentication.getName().equals(post.getAuthor().getEmail()) || authentication.getAuthorities().contains(roleRepository.findRoleByRole("ROLE_ADMIN")))) {
+        if (!(authentication.getName().equals(post.getAuthor().getEmail()) || (authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))))) {
             throw new ForbiddenException("Forbidden");
         }
 
