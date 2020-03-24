@@ -54,7 +54,7 @@ class CommentServiceTest {
                 .creationTime(null)
                 .build();
         //when
-        when(commentRepository.save(any())).thenReturn(Comment.builder()
+        when(commentRepository.saveAndFlush(any())).thenReturn(Comment.builder()
                 .id(id)
                 .content(content)
                 .post(post)
@@ -64,7 +64,7 @@ class CommentServiceTest {
         when(commentRepository.existsById(any())).thenReturn(true);
         //then
         Comment newComment = commentService.create(comment);
-        verify(commentRepository, times(1)).save(comment);
+        verify(commentRepository, times(1)).saveAndFlush(comment);
         assertEquals(newComment.getContent(), comment.getContent());
         assertEquals(newComment.getAuthor(), comment.getAuthor());
         assertEquals(newComment.getPost(), comment.getPost());
@@ -97,11 +97,11 @@ class CommentServiceTest {
                 .creationTime(creationTime)
                 .build();
         //when
-        when(commentRepository.save(comment)).thenReturn(comment);
+        when(commentRepository.saveAndFlush(comment)).thenReturn(comment);
         when(commentRepository.existsById(any())).thenReturn(true);
         //then
         Comment newComment = commentService.update(comment);
-        verify(commentRepository, times(1)).save(comment);
+        verify(commentRepository, times(1)).saveAndFlush(comment);
         assertEquals(newComment, comment);
     }
 
@@ -129,7 +129,7 @@ class CommentServiceTest {
                 .creationTime(creationTime)
                 .build();
         //when
-        when(commentRepository.save(comment)).thenReturn(comment);
+        when(commentRepository.saveAndFlush(comment)).thenReturn(comment);
         when(commentRepository.existsById(any())).thenReturn(true);
         //then
         assertThrows(BadRequestException.class, () -> {
@@ -161,7 +161,7 @@ class CommentServiceTest {
                 .creationTime(creationTime)
                 .build();
         //when
-        when(commentRepository.save(comment)).thenReturn(comment);
+        when(commentRepository.saveAndFlush(comment)).thenReturn(comment);
         when(commentRepository.existsById(any())).thenReturn(false);
         //then
         assertThrows(BadRequestException.class, () -> {

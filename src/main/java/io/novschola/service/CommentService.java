@@ -27,7 +27,7 @@ public class CommentService {
     public Comment create(Comment comment) {
         comment.setId(null);
         comment.setCreationTime(null);
-        return commentRepository.save(comment);
+        return commentRepository.saveAndFlush(comment);
     }
 
     public Comment update(Comment comment) {
@@ -35,7 +35,7 @@ public class CommentService {
         if (comment.getId() == null || !commentRepository.existsById(comment.getId())) {
             throw new BadRequestException();
         }
-        return commentRepository.save(comment);
+        return commentRepository.saveAndFlush(comment);
     }
 
     public Comment findById(Long id) {
