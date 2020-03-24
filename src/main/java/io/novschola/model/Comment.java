@@ -8,29 +8,27 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
- * Post business model class
+ * Comment domain model
  * @author Kacper Szot
  */
+
 @Entity
 @Data
-@Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class Post {
+@NoArgsConstructor
+@Builder
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     private User author;
-    private String title;
+    @ManyToOne
+    private Post post;
     @Lob
     private String content;
     @CreationTimestamp
     private LocalDateTime creationTime;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "post", fetch = FetchType.LAZY)
-    List<Comment> comments = new ArrayList<>();
 }

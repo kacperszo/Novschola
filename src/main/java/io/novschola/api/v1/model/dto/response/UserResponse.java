@@ -1,6 +1,9 @@
 package io.novschola.api.v1.model.dto.response;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * User data transfer object
@@ -8,6 +11,9 @@ import lombok.Data;
  * @author Kacper Szot
  */
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserResponse {
     private long id;
     private String email;

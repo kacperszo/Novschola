@@ -5,16 +5,21 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 /**
- * School class data transfer object
+ * Comment DTO for response
  * Objects of this class are returned by controllers instead of business' layer models
+ *
  * @author Kacper Szot
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SchoolClassResponse {
+public class CommentResponse {
     private Long id;
-    private String name;
+    private UserResponse author;
+    private String content;
+    private LocalDateTime creationTime;
 }

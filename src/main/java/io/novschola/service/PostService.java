@@ -30,7 +30,7 @@ public class PostService {
     }
 
     public Page<Post> findAllByAuthorId(Long id, Pageable pageable) {
-        return postRepository.findAllByAuthor_Id(id, pageable);
+        return postRepository.findAllByAuthorId(id, pageable);
     }
 
     public Page<Post> search(String query, Pageable pageable) {
