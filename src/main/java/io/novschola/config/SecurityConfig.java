@@ -56,22 +56,31 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().httpBasic().and()
                 .authorizeRequests()
+
+                //auth controller
                 .antMatchers(HttpMethod.POST,"/v1/auth").permitAll()
+
+                //user controller
                 .antMatchers(HttpMethod.GET,"/v1/users/*").permitAll()
                 .antMatchers(HttpMethod.GET,"/v1/users/activate/*").permitAll()
                 .antMatchers(HttpMethod.GET,"/v1/users").permitAll()
                 .antMatchers(HttpMethod.POST,"/v1/users").permitAll()
-                .antMatchers(HttpMethod.GET,"/v1/posts/*").permitAll()
+                .antMatchers(HttpMethod.PUT,"/v1/users/*").authenticated()
+
+                //post controller
                 .antMatchers(HttpMethod.GET,"/v1/posts").permitAll()
                 .antMatchers(HttpMethod.GET,"/v1/posts/search/*").permitAll()
-                .antMatchers(HttpMethod.PUT,"/v1/users/*").authenticated()
+                .antMatchers(HttpMethod.GET,"/v1/posts/*").permitAll()
                 .antMatchers(HttpMethod.PUT,"/v1/posts/*").authenticated()
                 .antMatchers(HttpMethod.POST,"/v1/posts").authenticated()
                 .antMatchers(HttpMethod.DELETE,"/v1/posts/*").authenticated()
                 .antMatchers(HttpMethod.DELETE,"/v1/users/*").authenticated()
                 .antMatchers(HttpMethod.POST,"/v1/posts/*").authenticated()
+
+                //comment controller
                 .antMatchers(HttpMethod.PUT,"/v1/comments/*").authenticated()
                 .antMatchers(HttpMethod.DELETE,"/v1/comments/*").authenticated()
+
                 .and().addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class).userDetailsService(jwtUserDetailsService);
         http.exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint);
     }

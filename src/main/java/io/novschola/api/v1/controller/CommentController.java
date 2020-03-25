@@ -32,14 +32,12 @@ public class CommentController {
     private CommentToCommentResponseConverter commentToCommentResponseConverter;
     private PostService postService;
     private UserService userService;
-    private RoleRepository roleRepository;
 
     public CommentController(CommentService commentService, CommentToCommentResponseConverter commentToCommentResponseConverter, PostService postService, UserService userService, RoleRepository roleRepository) {
         this.commentService = commentService;
         this.commentToCommentResponseConverter = commentToCommentResponseConverter;
         this.postService = postService;
         this.userService = userService;
-        this.roleRepository = roleRepository;
     }
 
     @PostMapping("/posts/{postId}")

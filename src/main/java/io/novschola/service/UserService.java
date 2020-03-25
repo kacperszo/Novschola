@@ -21,6 +21,7 @@ import javax.mail.internet.MimeMessage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 /**
@@ -78,6 +79,15 @@ public class UserService {
 
     public User findById(Long id) {
         return userRepository.findById(id).orElseThrow(ItemNotFoundException::new);
+    }
+
+    public User findActiveById(Long id) {
+        Optional<User> user = userRepository.findById(id);
+        if (user.isPresent() && user.get().isActive()){
+            return user.get();
+        }else{
+            throw new ItemNotFoundException();
+        }
     }
 
     public User findByEmail(String email) {

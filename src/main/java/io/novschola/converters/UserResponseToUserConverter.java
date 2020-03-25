@@ -4,8 +4,10 @@ import io.novschola.api.v1.model.dto.response.UserResponse;
 import io.novschola.model.User;
 import io.novschola.service.UserService;
 import org.springframework.stereotype.Component;
+
 /**
  * Class responsible for converting UserResponse objects to User objects
+ *
  * @author Kacper Szot
  */
 @Component
@@ -21,6 +23,9 @@ public class UserResponseToUserConverter implements Converter<UserResponse, User
 
     @Override
     public User convert(UserResponse from) {
+        if (from == null) {
+            return null;
+        }
         User user = userService.findById(from.getId());
         user.setEmail(from.getEmail());
         user.setFirstName(from.getFirstName());

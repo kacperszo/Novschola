@@ -9,7 +9,6 @@ import io.novschola.exception.BadJwtTokenException;
 import io.novschola.model.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -20,13 +19,13 @@ import java.util.function.Function;
 /**
  * Jwt token service class
  * this service is responsible for generating and parsing jwt tokens
+ *
  * @author Kacper Szot
  */
 @Service
-@PropertySource("classpath:application.properties")
 @Slf4j
 public class JwtTokenService {
-    private static final long EXPIRATION_TIME = 60 * 60 * 5 * 1000;
+    private static final long EXPIRATION_TIME = 60L * 60L * 5L * 1000L;
 
     private Key key;
 
