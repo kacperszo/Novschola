@@ -25,16 +25,19 @@ public class PostResponseToPostConverter implements Converter<PostResponse, Post
 
     @Override
     public Post convert(PostResponse from) {
-        Post post = new Post();
-        post.setId(from.getId());
-        post.setAuthor(userResponseToUserConverter.convert(from.getAuthor()));
-        post.setCreationTime(from.getCreationTime());
-        post.setTitle(from.getTitle());
-        post.setContent(from.getContent());
-        post.setComments(from.getComments()
-                .stream()
-                .map(x -> commentResponseToCommentConverter.convert(x))
-                .collect(Collectors.toCollection(ArrayList::new)));
-        return post;
+        if (from == null) {
+            return null;
+        }
+        return Post.builder()
+                .id(from.getId())
+                .author(userResponseToUserConverter.convert(from.getAuthor()))
+                .creationTime(from.getCreationTime())
+                .title(from.getTitle())
+                .content(from.getContent())
+                .comments(from.getComments()
+                        .stream()
+                        .map(x -> commentResponseToCommentConverter.convert(x))
+                        .collect(Collectors.toCollection(ArrayList::new)))
+                .build();
     }
 }

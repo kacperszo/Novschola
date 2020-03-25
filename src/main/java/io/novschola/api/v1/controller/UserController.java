@@ -50,7 +50,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public UserResponse getUser(@PathVariable Long id) {
-        return userToUserResponseConverter.convert(userService.findById(id));
+        return userToUserResponseConverter.convert(userService.findActiveById(id));
     }
 
     @PostMapping

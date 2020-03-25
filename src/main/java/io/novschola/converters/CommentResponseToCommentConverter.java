@@ -16,13 +16,16 @@ public class CommentResponseToCommentConverter implements Converter<CommentRespo
     private UserResponseToUserConverter userResponseToUserConverter;
     private CommentService commentService;
 
-    public CommentResponseToCommentConverter(UserResponseToUserConverter userResponseToUserConverter , CommentService commentService) {
+    public CommentResponseToCommentConverter(UserResponseToUserConverter userResponseToUserConverter, CommentService commentService) {
         this.userResponseToUserConverter = userResponseToUserConverter;
         this.commentService = commentService;
     }
 
     @Override
     public Comment convert(CommentResponse from) {
+        if (from == null) {
+            return null;
+        }
         Comment comment = commentService.findById(from.getId());
         comment.setId(from.getId());
         comment.setCreationTime(from.getCreationTime());

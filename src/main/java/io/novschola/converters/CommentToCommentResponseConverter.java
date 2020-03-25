@@ -3,6 +3,7 @@ package io.novschola.converters;
 import io.novschola.api.v1.model.dto.response.CommentResponse;
 import io.novschola.model.Comment;
 import org.springframework.stereotype.Component;
+
 /**
  * Class responsible for converting Comment objects to CommentResponse objects
  *
@@ -18,13 +19,16 @@ public class CommentToCommentResponseConverter implements Converter<Comment, Com
     }
 
     @Override
-    public CommentResponse convert(Comment from){
-    return CommentResponse
-            .builder()
-            .author(userToUserResponseConverter.convert(from.getAuthor()))
-            .id(from.getId())
-            .content(from.getContent())
-            .creationTime(from.getCreationTime())
-            .build();
+    public CommentResponse convert(Comment from) {
+        if (from == null) {
+            return null;
+        }
+        return CommentResponse
+                .builder()
+                .author(userToUserResponseConverter.convert(from.getAuthor()))
+                .id(from.getId())
+                .content(from.getContent())
+                .creationTime(from.getCreationTime())
+                .build();
     }
 }

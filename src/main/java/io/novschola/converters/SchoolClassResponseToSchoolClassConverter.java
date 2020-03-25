@@ -14,9 +14,9 @@ public class SchoolClassResponseToSchoolClassConverter implements Converter<Scho
         if (from==null){
             return null;
         }
-        SchoolClass schoolClass = new SchoolClass();
-        schoolClass.setName(from.getName());
-        schoolClass.setId(from.getId());
-        return schoolClass;
+        return SchoolClass.builder()
+                .id(from.getId())
+                .name(from.getName())
+                .build();
     }
 }

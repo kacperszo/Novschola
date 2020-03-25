@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * Authentication controller
  * Rest controller responsible for user's authentication
+ *
  * @author Kacper Szot
  */
 @RestController
@@ -37,16 +38,17 @@ public class AuthController {
 
     /**
      * Method is invoked when user sends a post request to auth endpoint, it's responsible for user's authentication and providing them a token.
-     * @exception BadCredentialsException when provided credentials are not correct controller throws a BadCredentialsException
+     *
      * @param jwtRequest JwtRequest
      * @return String when user is correctly authenticated controller returns jwt token
+     * @throws BadCredentialsException when provided credentials are not correct controller throws a BadCredentialsException
      */
-    @PostMapping
 
+    @PostMapping
     public JwtResponse auth(@RequestBody JwtRequest jwtRequest) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(jwtRequest.getEmail(), jwtRequest.getPassword()));
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new BadCredentialsException();
         }
         User user = userService.findByEmail(jwtRequest.getEmail());

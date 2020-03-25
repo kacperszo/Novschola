@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.novschola.api.v1.model.dto.request.CreatePostRequest;
 import io.novschola.api.v1.model.dto.request.UpdatePostRequest;
 import io.novschola.exception.ItemNotFoundException;
+import io.novschola.model.Comment;
 import io.novschola.model.Post;
 import io.novschola.model.Role;
 import io.novschola.model.User;
@@ -23,6 +24,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
@@ -45,33 +47,33 @@ class PostControllerTest {
     @MockBean
     RoleRepository roleRepository;
 
-    User author;
-    Post post;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.initMocks(this);
-        author = new User();
-        author.setId(2L);
-        author.setEmail("test@test.com");
-        author.setLastName("");
-        author.setFirstName("");
-        author.setPassword("");
-        post = new Post();
-        post.setTitle("testTitle");
-        post.setContent("testContent");
-        post.setId(2L);
-        post.setAuthor(author);
-    }
-
     @Test
     void getPostsShouldReturn200OK() throws Exception {
+        //given
+        User author = User.builder()
+                .id(2L)
+                .email("test@test.com")
+                .lastName("Doo")
+                .firstName("John")
+                .password("P@s5w00rd")
+                .build();
+        Comment comment = Comment.builder()
+                .content("test")
+                .author(author)
+                .build();
 
-
+        Post post = Post.builder()
+                .id(2L)
+                .author(author)
+                .title("testTitle")
+                .content("testContent")
+                .comments(Collections.singletonList(comment))
+                .build();
         List<Post> postList = new ArrayList<>();
         postList.add(post);
-
+        //when
         when(postService.findAll(any())).thenReturn(new PageImpl<Post>(postList));
+        //then
         mockMvc.
                 perform(get("/v1/posts"))
                 .andDo(print())
@@ -85,7 +87,29 @@ class PostControllerTest {
 
     @Test
     void getPostShouldReturn200OK() throws Exception {
+        //given
+        User author = User.builder()
+                .id(2L)
+                .email("test@test.com")
+                .lastName("Doo")
+                .firstName("John")
+                .password("P@s5w00rd")
+                .build();
+        Comment comment = Comment.builder()
+                .content("test")
+                .author(author)
+                .build();
+
+        Post post = Post.builder()
+                .id(2L)
+                .author(author)
+                .title("testTitle")
+                .content("testContent")
+                .comments(Collections.singletonList(comment))
+                .build();
+        //when
         when(postService.findById(any())).thenReturn(post);
+        //then
         mockMvc.
                 perform(get("/v1/posts/1"))
                 .andDo(print())
@@ -99,7 +123,29 @@ class PostControllerTest {
 
     @Test
     void getPostShouldReturn404() throws Exception {
+        //given
+        User author = User.builder()
+                .id(2L)
+                .email("test@test.com")
+                .lastName("Doo")
+                .firstName("John")
+                .password("P@s5w00rd")
+                .build();
+        Comment comment = Comment.builder()
+                .content("test")
+                .author(author)
+                .build();
+
+        Post post = Post.builder()
+                .id(2L)
+                .author(author)
+                .title("testTitle")
+                .content("testContent")
+                .comments(Collections.singletonList(comment))
+                .build();
+        //when
         when(postService.findById(any())).thenThrow(new ItemNotFoundException());
+        //then
         mockMvc.
                 perform(get("/v1/posts/1"))
                 .andDo(print())
@@ -109,9 +155,29 @@ class PostControllerTest {
 
     @Test
     void searchPosts() throws Exception {
+        //given
+        User author = User.builder()
+                .id(2L)
+                .email("test@test.com")
+                .lastName("Doo")
+                .firstName("John")
+                .password("P@s5w00rd")
+                .build();
+        Comment comment = Comment.builder()
+                .content("test")
+                .author(author)
+                .build();
+
+        Post post = Post.builder()
+                .id(2L)
+                .author(author)
+                .title("testTitle")
+                .content("testContent")
+                .comments(Collections.singletonList(comment))
+                .build();
         List<Post> postList = new ArrayList<>();
         postList.add(post);
-
+        //when
         when(postService.search(any(), any())).thenReturn(new PageImpl<Post>(postList));
         mockMvc.
                 perform(get("/v1/posts/search/test"))
@@ -127,13 +193,33 @@ class PostControllerTest {
     @Test
     @WithMockUser(username = "test@test.com")
     void createPostShouldReturnHttp201() throws Exception {
+//given
+        User author = User.builder()
+                .id(2L)
+                .email("test@test.com")
+                .lastName("Doo")
+                .firstName("John")
+                .password("P@s5w00rd")
+                .build();
+        Comment comment = Comment.builder()
+                .content("test")
+                .author(author)
+                .build();
 
-        when(userService.findByEmail(any())).thenReturn(author);
-        when(postService.create(any())).thenReturn(post);
+        Post post = Post.builder()
+                .id(2L)
+                .author(author)
+                .title("testTitle")
+                .content("testContent")
+                .comments(Collections.singletonList(comment))
+                .build();
         CreatePostRequest createPostRequest = new CreatePostRequest();
         createPostRequest.setContent("test_content");
         createPostRequest.setTitle("test_title");
-
+        //when
+        when(userService.findByEmail(any())).thenReturn(author);
+        when(postService.create(any())).thenReturn(post);
+        //then
         mockMvc.perform(
                 post("/v1/posts")
                         .content(asJsonString(createPostRequest))
@@ -150,6 +236,27 @@ class PostControllerTest {
     @Test
     @WithMockUser(username = "test@test.com")
     void createPostShouldReturnHttp400() throws Exception {
+        //given
+        User author = User.builder()
+                .id(2L)
+                .email("test@test.com")
+                .lastName("Doo")
+                .firstName("John")
+                .password("P@s5w00rd")
+                .build();
+        Comment comment = Comment.builder()
+                .content("test")
+                .author(author)
+                .build();
+
+        Post post = Post.builder()
+                .id(2L)
+                .author(author)
+                .title("testTitle")
+                .content("testContent")
+                .comments(Collections.singletonList(comment))
+                .build();
+        //then
         mockMvc.perform(
                 post("/v1/posts")
                         .content(asJsonString("{}"))
@@ -165,6 +272,27 @@ class PostControllerTest {
 
     @Test
     void createPostShouldReturnHttp401() throws Exception {
+        //given
+        User author = User.builder()
+                .id(2L)
+                .email("test@test.com")
+                .lastName("Doo")
+                .firstName("John")
+                .password("P@s5w00rd")
+                .build();
+        Comment comment = Comment.builder()
+                .content("test")
+                .author(author)
+                .build();
+
+        Post post = Post.builder()
+                .id(2L)
+                .author(author)
+                .title("testTitle")
+                .content("testContent")
+                .comments(Collections.singletonList(comment))
+                .build();
+        //then
         mockMvc.perform(
                 post("/v1/posts")
                         .content(asJsonString("{}"))
@@ -181,13 +309,33 @@ class PostControllerTest {
     @Test
     @WithMockUser(username = "test@test.com")
     void updatePostShouldReturnHttp200() throws Exception {
+        //given
+        User author = User.builder()
+                .id(2L)
+                .email("test@test.com")
+                .lastName("Doo")
+                .firstName("John")
+                .password("P@s5w00rd")
+                .build();
+        Comment comment = Comment.builder()
+                .content("test")
+                .author(author)
+                .build();
 
-        when(postService.update(any())).thenReturn(post);
-        when(postService.findById(any())).thenReturn(post);
+        Post post = Post.builder()
+                .id(2L)
+                .author(author)
+                .title("testTitle")
+                .content("testContent")
+                .comments(Collections.singletonList(comment))
+                .build();
         UpdatePostRequest updatePostRequest = new UpdatePostRequest();
         updatePostRequest.setContent("test_content");
         updatePostRequest.setTitle("test_title");
-
+        //when
+        when(postService.update(any())).thenReturn(post);
+        when(postService.findById(any())).thenReturn(post);
+        //then
         mockMvc.perform(
                 put("/v1/posts/2")
                         .content(asJsonString(updatePostRequest))
@@ -206,13 +354,33 @@ class PostControllerTest {
     @Test
     @WithMockUser(username = "test@test.com")
     void updatePostShouldReturnHttp404() throws Exception {
+        //given
+        User author = User.builder()
+                .id(2L)
+                .email("test@test.com")
+                .lastName("Doo")
+                .firstName("John")
+                .password("P@s5w00rd")
+                .build();
+        Comment comment = Comment.builder()
+                .content("test")
+                .author(author)
+                .build();
 
-        when(postService.update(any())).thenReturn(post);
-        when(postService.findById(any())).thenThrow(new ItemNotFoundException());
+        Post post = Post.builder()
+                .id(2L)
+                .author(author)
+                .title("testTitle")
+                .content("testContent")
+                .comments(Collections.singletonList(comment))
+                .build();
         UpdatePostRequest updatePostRequest = new UpdatePostRequest();
         updatePostRequest.setContent("test_content");
         updatePostRequest.setTitle("test_title");
-
+        //when
+        when(postService.update(any())).thenReturn(post);
+        when(postService.findById(any())).thenThrow(new ItemNotFoundException());
+        //then
         mockMvc.perform(
                 put("/v1/posts/2")
                         .content(asJsonString(updatePostRequest))
@@ -229,6 +397,27 @@ class PostControllerTest {
     @Test
     @WithMockUser(username = "test@test.com")
     void updatePostShouldReturnHttp400() throws Exception {
+        //given
+        User author = User.builder()
+                .id(2L)
+                .email("test@test.com")
+                .lastName("Doo")
+                .firstName("John")
+                .password("P@s5w00rd")
+                .build();
+        Comment comment = Comment.builder()
+                .content("test")
+                .author(author)
+                .build();
+
+        Post post = Post.builder()
+                .id(2L)
+                .author(author)
+                .title("testTitle")
+                .content("testContent")
+                .comments(Collections.singletonList(comment))
+                .build();
+        //then
         mockMvc.perform(
                 put("/v1/posts/2")
                         .content(asJsonString("{}"))
@@ -244,13 +433,33 @@ class PostControllerTest {
 
     @Test
     void updatePostShouldReturnHttp401() throws Exception {
+        //given
+        User author = User.builder()
+                .id(2L)
+                .email("test@test.com")
+                .lastName("Doo")
+                .firstName("John")
+                .password("P@s5w00rd")
+                .build();
+        Comment comment = Comment.builder()
+                .content("test")
+                .author(author)
+                .build();
 
-        when(postService.update(any())).thenReturn(post);
-        when(postService.findById(any())).thenReturn(post);
+        Post post = Post.builder()
+                .id(2L)
+                .author(author)
+                .title("testTitle")
+                .content("testContent")
+                .comments(Collections.singletonList(comment))
+                .build();
         UpdatePostRequest updatePostRequest = new UpdatePostRequest();
         updatePostRequest.setContent("test_content");
         updatePostRequest.setTitle("test_title");
-
+        //when
+        when(postService.update(any())).thenReturn(post);
+        when(postService.findById(any())).thenReturn(post);
+        //then
         mockMvc.perform(
                 put("/v1/posts/2")
                         .content(asJsonString(post))
@@ -267,13 +476,33 @@ class PostControllerTest {
     @Test
     @WithMockUser(username = "bad@test.com")
     void updatePostShouldReturnHttp403() throws Exception {
+        //given
+        User author = User.builder()
+                .id(2L)
+                .email("test@test.com")
+                .lastName("Doo")
+                .firstName("John")
+                .password("P@s5w00rd")
+                .build();
+        Comment comment = Comment.builder()
+                .content("test")
+                .author(author)
+                .build();
 
-        when(postService.update(any())).thenReturn(post);
-        when(postService.findById(any())).thenReturn(post);
+        Post post = Post.builder()
+                .id(2L)
+                .author(author)
+                .title("testTitle")
+                .content("testContent")
+                .comments(Collections.singletonList(comment))
+                .build();
         UpdatePostRequest updatePostRequest = new UpdatePostRequest();
         updatePostRequest.setContent("test_content");
         updatePostRequest.setTitle("test_title");
-
+        //when
+        when(postService.update(any())).thenReturn(post);
+        when(postService.findById(any())).thenReturn(post);
+        //then
         mockMvc.perform(
                 put("/v1/posts/2")
                         .content(asJsonString(post))
@@ -290,13 +519,33 @@ class PostControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
     void updatePostShouldReturnHttp200AdminAccess() throws Exception {
+        //given
+        User author = User.builder()
+                .id(2L)
+                .email("test@test.com")
+                .lastName("Doo")
+                .firstName("John")
+                .password("P@s5w00rd")
+                .build();
+        Comment comment = Comment.builder()
+                .content("test")
+                .author(author)
+                .build();
 
-        when(postService.update(any())).thenReturn(post);
-        when(postService.findById(any())).thenReturn(post);
+        Post post = Post.builder()
+                .id(2L)
+                .author(author)
+                .title("testTitle")
+                .content("testContent")
+                .comments(Collections.singletonList(comment))
+                .build();
         UpdatePostRequest updatePostRequest = new UpdatePostRequest();
         updatePostRequest.setContent("test_content");
         updatePostRequest.setTitle("test_title");
-
+        //when
+        when(postService.update(any())).thenReturn(post);
+        when(postService.findById(any())).thenReturn(post);
+        //then
         mockMvc.perform(
                 put("/v1/posts/2")
                         .content(asJsonString(post))
@@ -314,9 +563,30 @@ class PostControllerTest {
     @Test
     @WithMockUser(username = "test@test.com")
     void deletePostShouldReturnHttp200() throws Exception {
+        //given
+        User author = User.builder()
+                .id(2L)
+                .email("test@test.com")
+                .lastName("Doo")
+                .firstName("John")
+                .password("P@s5w00rd")
+                .build();
+        Comment comment = Comment.builder()
+                .content("test")
+                .author(author)
+                .build();
+
+        Post post = Post.builder()
+                .id(2L)
+                .author(author)
+                .title("testTitle")
+                .content("testContent")
+                .comments(Collections.singletonList(comment))
+                .build();
+        //when
         when(postService.findById(any())).thenReturn(post);
         when(roleRepository.findRoleByRole("ROLE_ADMIN")).thenReturn(new Role("ROLE_ADMIN"));
-
+        //then
         mockMvc.perform(
                 delete("/v1/posts/2")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -332,8 +602,30 @@ class PostControllerTest {
     @Test
     @WithMockUser(username = "test@test.com")
     void deletePostShouldReturnHttp404() throws Exception {
+        //given
+        User author = User.builder()
+                .id(2L)
+                .email("test@test.com")
+                .lastName("Doo")
+                .firstName("John")
+                .password("P@s5w00rd")
+                .build();
+        Comment comment = Comment.builder()
+                .content("test")
+                .author(author)
+                .build();
+
+        Post post = Post.builder()
+                .id(2L)
+                .author(author)
+                .title("testTitle")
+                .content("testContent")
+                .comments(Collections.singletonList(comment))
+                .build();
+        //when
         when(postService.findById(any())).thenThrow(new ItemNotFoundException());
         when(roleRepository.findRoleByRole("ROLE_ADMIN")).thenReturn(new Role("ROLE_ADMIN"));
+        //then
         mockMvc.perform(
                 delete("/v1/posts/2")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -349,9 +641,30 @@ class PostControllerTest {
     @Test
     @WithMockUser(username = "bad@test.com")
     void deletePostShouldReturnHttp401() throws Exception {
+        //given
+        User author = User.builder()
+                .id(2L)
+                .email("test@test.com")
+                .lastName("Doo")
+                .firstName("John")
+                .password("P@s5w00rd")
+                .build();
+        Comment comment = Comment.builder()
+                .content("test")
+                .author(author)
+                .build();
+
+        Post post = Post.builder()
+                .id(2L)
+                .author(author)
+                .title("testTitle")
+                .content("testContent")
+                .comments(Collections.singletonList(comment))
+                .build();
+        //when
         when(roleRepository.findRoleByRole("ROLE_ADMIN")).thenReturn(new Role("ROLE_ADMIN"));
         when(postService.findById(any())).thenReturn(post);
-
+        //then
         mockMvc.perform(
                 delete("/v1/posts/2")
                         .contentType(MediaType.APPLICATION_JSON)
