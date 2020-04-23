@@ -58,13 +58,15 @@ Dont forget to set:
 Use novschola.sql file to set up your database.
 
 ### Documentation
-Open api documentation available: https://app.swaggerhub.com/apis/kacperszot/Novschola/1.0.0
+Open api documentation available: https://app.swaggerhub.com/apis/kacperszot/Novschola/
 ### Development
 
 Want to contribute? Great!
 
 Just import project to your favorite IDE like any other maven project and don't forget to install Lombak support for your ide.
+Use ```dev``` profile for development
 
+> Note: in dev profile, novschola do **not** send the activation mail, user is already active after registration
 
 ### Docker
 Novschola is very easy to install and deploy in a Docker container.
