@@ -7,7 +7,7 @@ import lombok.Data;
  * @author Kacper Szot
  */
 @Data
-public class JwtRequest {
+public class AuthRequest {
     private String email;
     private String password;
 }
