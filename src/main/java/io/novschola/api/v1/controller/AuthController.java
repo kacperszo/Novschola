@@ -2,6 +2,7 @@ package io.novschola.api.v1.controller;
 
 import io.novschola.api.v1.model.dto.request.JwtRequest;
 import io.novschola.api.v1.model.dto.response.JwtResponse;
+import io.novschola.converters.UserToUserResponseConverter;
 import io.novschola.exception.BadCredentialsException;
 import io.novschola.model.User;
 import io.novschola.service.JwtTokenService;
@@ -29,15 +30,17 @@ public class AuthController {
     private AuthenticationManager authenticationManager;
     private UserService userService;
     private JwtTokenService jwtTokenService;
+    private UserToUserResponseConverter userToUserResponseConverter;
 
-    public AuthController(AuthenticationManager authenticationManager, UserService userService, JwtTokenService jwtTokenService) {
+    public AuthController(AuthenticationManager authenticationManager, UserService userService, JwtTokenService jwtTokenService, UserToUserResponseConverter userToUserResponseConverter) {
         this.authenticationManager = authenticationManager;
         this.userService = userService;
         this.jwtTokenService = jwtTokenService;
+        this.userToUserResponseConverter = userToUserResponseConverter;
     }
 
     /**
-     * Method is invoked when user sends a post request to auth endpoint, it's responsible for user's authentication and providing them a token.
+     * Method is invoked when user sends a post request to auth endpoint, it's responsible for user's authentication and providing them a token and information about logged user
      *
      * @param jwtRequest JwtRequest
      * @return String when user is correctly authenticated controller returns jwt token
@@ -52,7 +55,7 @@ public class AuthController {
             throw new BadCredentialsException();
         }
         User user = userService.findByEmail(jwtRequest.getEmail());
-        return new JwtResponse(jwtTokenService.generateToken(user));
+        return new JwtResponse(jwtTokenService.generateToken(user), userToUserResponseConverter.convert(user));
     }
 
 

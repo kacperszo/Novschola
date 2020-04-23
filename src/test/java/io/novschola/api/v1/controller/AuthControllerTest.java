@@ -16,11 +16,9 @@ import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 
 import static org.hamcrest.Matchers.containsString;
@@ -40,12 +38,11 @@ class AuthControllerTest {
     UserService userService;
     @MockBean
     JwtTokenService jwtTokenService;
-
+    Authentication authentication;
     @Autowired
     private MockMvc mockMvc;
-    Authentication authentication;
 
-    Authentication getAuthentication(){
+    Authentication getAuthentication() {
         return new Authentication() {
             @Override
             public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -83,6 +80,7 @@ class AuthControllerTest {
             }
         };
     }
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
@@ -92,9 +90,13 @@ class AuthControllerTest {
 
     @Test
     void authWithCorrectCredentials() throws Exception {
-    when(authenticationManager.authenticate(any())).thenReturn(authentication);
-    when(userService.findByEmail(any())).thenReturn(new User());
-    when(jwtTokenService.generateToken(any())).thenReturn("VALID_TOKEN");
+        User user = new User();
+        user.setId(2L);
+        user.setEmail("test@test.com");
+
+        when(authenticationManager.authenticate(any())).thenReturn(authentication);
+        when(userService.findByEmail(any())).thenReturn(user);
+        when(jwtTokenService.generateToken(any())).thenReturn("VALID_TOKEN");
 
         this.mockMvc
                 .perform(
@@ -103,11 +105,13 @@ class AuthControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .accept(MediaType.APPLICATION_JSON)
                 )
-                
+
                 .andDo(print()).andExpect(status().isOk())
-                .andExpect(content().string(containsString("VALID_TOKEN")));
+                .andExpect(content().string(containsString("VALID_TOKEN")))
+                .andExpect(content().string(containsString("user")));
 
     }
+
     @Test
     void authWithBadCredentials() throws Exception {
         when(authenticationManager.authenticate(any())).thenThrow(new BadCredentialsException("wrong password"));

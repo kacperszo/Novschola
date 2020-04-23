@@ -235,6 +235,9 @@ paths:
                 properties:
                   token:
                     type : string
+                  user:
+                    $ref: '#/components/schemas/user'
+
         '401':
           description: bad credentials
   /posts:
