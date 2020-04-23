@@ -9,6 +9,8 @@ tags:
     description: "User authentication"
   - name: "posts"
     description: "Post manipulation"
+  - name: "comments"
+    description: "Comment manipulation"
 servers:
   - url: '{server}/v1'
     variables:
@@ -86,6 +88,8 @@ paths:
 
   /users/{id}:
     put:
+      security:
+        - bearerAuth: []
       summary: Update existing user
       description: can be done only by logged user
       operationId: updateUser
@@ -124,6 +128,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/user"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
     get:
       summary: Get user by id
       operationId: getUser
@@ -148,6 +154,8 @@ paths:
         '404':
           description: User with provided id cannot be found
     delete:
+      security:
+        - bearerAuth: []
       summary: Delete user by id
       description: can be done only by logged user
       operationId: deleteUser
@@ -171,6 +179,8 @@ paths:
                 $ref: '#/components/schemas/user'
         '404':
           description: User with provided id cannot be deleted
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
   /users/{query}:
     get:
       summary: Search users
@@ -225,6 +235,9 @@ paths:
                 properties:
                   token:
                     type : string
+                  user:
+                    $ref: '#/components/schemas/user'
+
         '401':
           description: bad credentials
   /posts:
@@ -318,6 +331,8 @@ paths:
                   empty:
                     type: boolean
     post:
+      security:
+        - bearerAuth: []
       summary: Create new post
       operationId: createPost
       description: can be done only by logged user
@@ -346,8 +361,55 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/post"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
   /posts/{id}:
+    post:
+      security:
+        - bearerAuth: []
+      summary: add comment to existing post
+      description: can be done only by logged user
+      operationId: createComment
+      tags:
+        - comments
+      parameters:
+        - name: id
+          in: path
+          description: ID of post to add comment
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: ""
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - id
+                - name
+              properties:
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                bio:
+                  type: string
+      responses:
+        '200':
+          description: created comment for post
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/comment"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
     put:
+      security:
+        - bearerAuth: []
       summary: Update existing post
       operationId: updatePost
       description: can be done only by logged user
@@ -384,6 +446,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/post"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
     get:
       summary: Find post by id
       operationId: getPost
@@ -408,6 +472,8 @@ paths:
         '404':
           description: Post with provided id cannot be find
     delete:
+      security:
+        - bearerAuth: []
       summary: Delete post by id
       operationId: deletePost
       tags:
@@ -425,6 +491,8 @@ paths:
           description: "Post deleted correctly"
         '404':
           description: Post with provided id cannot be deleted
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
   /posts/search/{query}:
     get:
       summary: Search posts
@@ -523,7 +591,74 @@ paths:
                     type: boolean
                   empty:
                     type: boolean
+  /comments/{id}/:
+    put:
+      security:
+        - bearerAuth: []
+      summary: Update existing comment
+      operationId: updateComment
+      description: can be done only by logged user
+      tags:
+        - comments
+      parameters:
+        - name: id
+          in: path
+          description: ID of comment to update
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Update existing comment
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+      responses:
+        '200':
+          description: Updated existing comment
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/comment"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+    delete:
+      security:
+        - bearerAuth: []
+      summary: Delete comment by id
+      operationId: deleteComment
+      tags:
+        - comments
+      parameters:
+        - name: id
+          in: path
+          description: ID of comment to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: "Post deleted correctly"
+        '404':
+          description: Post with provided id cannot be deleted
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  responses:
+    UnauthorizedError:
+      description: "Access token is missing or invalid"
   schemas:
     school-class:
       type: object
@@ -565,5 +700,16 @@ components:
         creationTime:
           type: string
         author:
-          type : object
           $ref: "#/components/schemas/user"
+    comment:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        author:
+          $ref: "#/components/schemas/user"
+        content:
+          type: string
+        creationTime:
+          type: string

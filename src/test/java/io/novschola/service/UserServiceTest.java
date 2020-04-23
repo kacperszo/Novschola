@@ -47,7 +47,7 @@ class UserServiceTest {
     void setUp() {
         bCryptPasswordEncoder = new BCryptPasswordEncoder(16);
         MockitoAnnotations.initMocks(this);
-        userService = new UserService(userRepository, roleRepository, bCryptPasswordEncoder, javaMailSender,"http://127.0.0.1:8080");
+        userService = new UserService(userRepository, roleRepository, bCryptPasswordEncoder, javaMailSender,"http://127.0.0.1:8080",false);
         user = new User();
         user.setEmail(email);
         user.setFirstName(name);

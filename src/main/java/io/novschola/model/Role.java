@@ -1,5 +1,8 @@
 package io.novschola.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.Entity;
@@ -11,6 +14,9 @@ import javax.persistence.Id;
  * @author Kacper Szot
  */
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Role implements GrantedAuthority {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,7 +26,6 @@ public class Role implements GrantedAuthority {
     public Role(String role) {
         this.role = role;
     }
-    public Role(){}
 
     @Override
     public String getAuthority() {

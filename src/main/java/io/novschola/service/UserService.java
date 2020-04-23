@@ -21,6 +21,7 @@ import javax.mail.internet.MimeMessage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 /**
@@ -35,15 +36,17 @@ public class UserService {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     private JavaMailSender javaMailSender;
     private String novscholaUrl;
+    private boolean shouldSendActivationEmail;
 
 
     @Autowired
-    public UserService(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder bCryptPasswordEncoder, JavaMailSender javaMailSender, @Value("${novschola.url}") String novscholaUrl) {
+    public UserService(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder bCryptPasswordEncoder, JavaMailSender javaMailSender, @Value("${novschola.url}") String novscholaUrl, @Value("${send-activation-mail}") boolean shouldSendActivationEmail) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.javaMailSender = javaMailSender;
         this.novscholaUrl = novscholaUrl;
+        this.shouldSendActivationEmail = shouldSendActivationEmail;
     }
 
     public User create(User user) throws MessagingException {
@@ -55,16 +58,18 @@ public class UserService {
         user.setActive(false);
         user.setRoles(Arrays.asList(roleRepository.findRoleByRole("ROLE_USER")));
 
+        if (shouldSendActivationEmail) {
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
 
-        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+            helper.setTo(user.getEmail());
+            helper.setSubject("Novschola account activation");
+            helper.setText("To activate account click <a href=\" " + novscholaUrl + "/v1/users/activate/" + user.getActivationKey() + "\"> here </a>", true);
 
-        helper.setTo(user.getEmail());
-        helper.setSubject("Novschola account activation");
-        helper.setText("To activate account click <a href=\" "+novscholaUrl+"/v1/users/activate/"+user.getActivationKey()+"\"> here </a>", true);
-
-        javaMailSender.send(mimeMessage);
-
+            javaMailSender.send(mimeMessage);
+        }else{
+            user.setActive(true);
+        }
 
         return userRepository.saveAndFlush(user);
     }
@@ -78,6 +83,15 @@ public class UserService {
 
     public User findById(Long id) {
         return userRepository.findById(id).orElseThrow(ItemNotFoundException::new);
+    }
+
+    public User findActiveById(Long id) {
+        Optional<User> user = userRepository.findById(id);
+        if (user.isPresent() && user.get().isActive()){
+            return user.get();
+        }else{
+            throw new ItemNotFoundException();
+        }
     }
 
     public User findByEmail(String email) {

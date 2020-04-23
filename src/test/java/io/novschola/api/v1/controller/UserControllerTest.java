@@ -68,7 +68,7 @@ class UserControllerTest {
         User user = new User();
         user.setId(2L);
         user.setEmail("test@test.com");
-        when(userService.findById(2L)).thenReturn(user);
+        when(userService.findActiveById(2L)).thenReturn(user);
         mockMvc.
                 perform(get("/v1/users/2"))
                 .andDo(print())
@@ -82,7 +82,7 @@ class UserControllerTest {
 
     @Test
     void getUserUsingIdShouldReturnHttp404() throws Exception {
-        when(userService.findById(3L)).thenThrow(new ItemNotFoundException());
+        when(userService.findActiveById(3L)).thenThrow(new ItemNotFoundException());
         mockMvc.
                 perform(get("/v1/users/3"))
                 .andDo(print())

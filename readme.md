@@ -15,6 +15,7 @@ Novschola is a social platform designed for schools
 
   - Login to your own account
   - Create your own post
+  - Add comments to posts
 
 
 ### Tech
@@ -53,6 +54,8 @@ Dont forget to set:
 -  ```${mysqlPassword}``` - password for mysql database
 -  ```${mysqlUsername}``` - username for mysql database
 -  ```${baseUrl}``` - url of your novschola instance default set to ```http:127.0.0.1:8080```
+
+Use novschola.sql file to set up your database.
 
 ### Documentation
 Open api documentation available: https://app.swaggerhub.com/apis/kacperszot/Novschola/1.0.0
