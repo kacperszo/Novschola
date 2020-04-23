@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class JwtResponse {
+public class AuthResponse {
 private String token;
 @JsonProperty("user")
 private UserResponse userResponse;

@@ -1,7 +1,7 @@
 package io.novschola.api.v1.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.novschola.api.v1.model.dto.request.JwtRequest;
+import io.novschola.api.v1.model.dto.request.AuthRequest;
 import io.novschola.model.User;
 import io.novschola.service.JwtTokenService;
 import io.novschola.service.UserService;
@@ -101,7 +101,7 @@ class AuthControllerTest {
         this.mockMvc
                 .perform(
                         post("/v1/auth")
-                                .content(asJsonString(new JwtRequest()))
+                                .content(asJsonString(new AuthRequest()))
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .accept(MediaType.APPLICATION_JSON)
                 )
@@ -119,7 +119,7 @@ class AuthControllerTest {
         this.mockMvc
                 .perform(
                         post("/v1/auth")
-                                .content(asJsonString(new JwtRequest()))
+                                .content(asJsonString(new AuthRequest()))
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .accept(MediaType.APPLICATION_JSON)
                 )
